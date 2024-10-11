@@ -1,0 +1,8 @@
+All Features of this App
+
+1. Code splitting:
+
+If we dont enable it, all the code of all pages will load initially which will affect performance to go low
+If you enable it this loads codes of the page which is opened when you initially hit the website and not the whole bundle of codes
+so this is performance efficient.
+its done with the help of lazy loading and Suspense
