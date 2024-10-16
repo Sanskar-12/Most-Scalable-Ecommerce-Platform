@@ -3,6 +3,8 @@ import AdminSidebar from "../components/AdminSidebar";
 import { FaRegBell } from "react-icons/fa";
 import userImg from "../assets/images/userpic.png";
 import { HiTrendingDown, HiTrendingUp } from "react-icons/hi";
+import data from "../assets/data.json";
+import { BarChart } from "../components/Charts";
 
 const Dashboard = () => {
   return (
@@ -44,17 +46,34 @@ const Dashboard = () => {
             color="rgb(76 0 255)"
           />
         </section>
-        {/* Graph Section */}
+        {/* Bar Graph Section and Categories Section*/}
         <section className="graph-container">
           <div className="revenue-chart">
             <h2>Revenue & Transaction</h2>
-            {/* Graph Component here */}
+            <BarChart
+              data_1={[12, 230, 230, 344, 354, 456, 22]}
+              data_2={[200, 34, 333, 45, 334, 34, 234]}
+              title_1="Revenue"
+              title_2="Transaction"
+              bgColor_1="rgb(0,115,255)"
+              bgColor_2="rgb(53,162,235,0.8)"
+            />
           </div>
           <div className="dashboard-categories">
             <h2>Inventory</h2>
-            <div></div>
+            <div>
+              {data.categories.map((category) => (
+                <CategoryItem
+                  heading={category.heading}
+                  value={category.value}
+                  color={`hsl(${category.value * 4},${category.value}%,50%)`}
+                />
+              ))}
+            </div>
           </div>
         </section>
+        {/* Doughnut Chart and Table */}
+        <section></section>
       </main>
     </div>
   );
@@ -108,6 +127,29 @@ const WidgetItem = ({
         </span>
       </div>
     </article>
+  );
+};
+
+interface CategoryItemProps {
+  color: string;
+  value: number;
+  heading: string;
+}
+
+const CategoryItem = ({ color, value, heading }: CategoryItemProps) => {
+  return (
+    <div className="category-item">
+      <h5>{heading}</h5>
+      <div>
+        <div
+          style={{
+            backgroundColor: color,
+            width: `${value}%`,
+          }}
+        />
+      </div>
+      <span>{value}%</span>
+    </div>
   );
 };
 
