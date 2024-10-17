@@ -102,3 +102,49 @@ export const BarChart = ({
 
   return <Bar options={options} data={data} width={horizontal ? "200%" : ""} />;
 };
+
+interface DoughnutChartProps {
+  labels: string[];
+  data: number[];
+  backgroundColor: string[];
+  cutout?: number | string;
+  legends?: boolean;
+  offset?: number[];
+}
+
+export const DoughnutChart = ({
+  labels,
+  data,
+  backgroundColor,
+  cutout,
+  legends = true,
+  offset,
+}: DoughnutChartProps) => {
+  const DoughnutData: ChartData<"doughnut", number[], string> = {
+    labels,
+    datasets: [
+      {
+        data,
+        backgroundColor,
+        borderWidth: 0,
+        offset,
+      },
+    ],
+  };
+
+  const DoughnutOptions: ChartOptions<"doughnut"> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: legends,
+        position: "bottom",
+        labels: {
+          padding: 40,
+        },
+      },
+    },
+    cutout,
+  };
+
+  return <Doughnut data={DoughnutData} options={DoughnutOptions} />;
+};

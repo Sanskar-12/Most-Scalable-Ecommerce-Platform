@@ -6,3 +6,12 @@ If we dont enable it, all the code of all pages will load initially which will a
 If you enable it this loads codes of the page which is opened when you initially hit the website and not the whole bundle of codes
 so this is performance efficient.
 its done with the help of lazy loading and Suspense
+
+2. Charts
+
+Used react chart js 2 for data visualisation in form of Charts
+
+3. Higher Order Component
+
+Made a Higher Order Component.. what is HOC 
+Basically there is a function which takes the Component as a parameter and add some functionality to it and return it
