@@ -14,13 +14,16 @@ import {
   RiShoppingBag3Fill,
 } from "react-icons/ri";
 import { Link, Location, useLocation } from "react-router-dom";
+import EcommerceLogo from "../assets/images/logo.png"
 
 const AdminSidebar = () => {
   const location = useLocation();
 
   return (
     <aside>
-      <h2>Logo.</h2>
+      <div className="image-div">
+        <img src={EcommerceLogo} alt="Logo" height={"50px"} width={"290px"} />
+      </div>
       <DashboardDiv location={location} />
       <ChartsDiv location={location} />
       <AppsDiv location={location} />

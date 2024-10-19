@@ -39,13 +39,13 @@ a {
   >aside {
     width: 100%;
     background-color: white;
-    padding: 1rem;
     z-index: 10;
     overflow-y: auto;
 
     &::-webkit-scrollbar {
       display: none;
     }
+
 
     >div {
       margin: 2rem 1rem;
