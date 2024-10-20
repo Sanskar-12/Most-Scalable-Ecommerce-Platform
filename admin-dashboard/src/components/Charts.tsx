@@ -148,3 +148,40 @@ export const DoughnutChart = ({
 
   return <Doughnut data={DoughnutData} options={DoughnutOptions} />;
 };
+
+interface PieChartProps {
+  labels: string[];
+  data: number[];
+  backgroundColor: string[];
+  offset?: number[];
+}
+
+export const PieChart = ({
+  labels,
+  data,
+  backgroundColor,
+  offset,
+}: PieChartProps) => {
+  const PieChartData: ChartData<"pie", number[], string> = {
+    labels,
+    datasets: [
+      {
+        data,
+        backgroundColor,
+        borderWidth: 1,
+        offset,
+      },
+    ],
+  };
+
+  const PieChartOptions: ChartOptions<"pie"> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
+
+  return <Pie data={PieChartData} options={PieChartOptions} />;
+};
