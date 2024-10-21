@@ -185,3 +185,60 @@ export const PieChart = ({
 
   return <Pie data={PieChartData} options={PieChartOptions} />;
 };
+
+interface LineChartProps {
+  data: number[];
+  label: string;
+  backgroundColor: string;
+  borderColor: string;
+  labels?: string[];
+}
+
+export const LineChart = ({
+  data,
+  label,
+  backgroundColor,
+  borderColor,
+  labels = months,
+}: LineChartProps) => {
+  const LineChartData: ChartData<"line", number[], string> = {
+    labels,
+    datasets: [
+      {
+        fill: true,
+        data,
+        backgroundColor,
+        borderColor,
+        label,
+      },
+    ],
+  };
+
+  const LineChartOptions: ChartOptions<"line"> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: false,
+      },
+    },
+
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          display: false,
+        },
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+    },
+  };
+
+  return <Line data={LineChartData} options={LineChartOptions} />;
+};
