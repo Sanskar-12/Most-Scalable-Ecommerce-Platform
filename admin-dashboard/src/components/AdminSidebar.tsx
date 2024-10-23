@@ -14,20 +14,64 @@ import {
   RiShoppingBag3Fill,
 } from "react-icons/ri";
 import { Link, Location, useLocation } from "react-router-dom";
-import EcommerceLogo from "../assets/images/logo.png"
+import EcommerceLogo from "../assets/images/logo.png";
+import { useEffect, useState } from "react";
+import { HiMenuAlt4 } from "react-icons/hi";
 
 const AdminSidebar = () => {
   const location = useLocation();
 
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [phoneActive, setPhoneActive] = useState<boolean>(
+    window.innerWidth < 1100
+  );
+
+  const resizeHandler = () => {
+    setPhoneActive(window.innerWidth < 1100);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", resizeHandler);
+
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+    };
+  }, []);
+
   return (
-    <aside>
-      <div className="image-div">
-        <img src={EcommerceLogo} alt="Logo" height={"50px"} width={"290px"} />
-      </div>
-      <DashboardDiv location={location} />
-      <ChartsDiv location={location} />
-      <AppsDiv location={location} />
-    </aside>
+    <>
+      {phoneActive && (
+        <button id="hamburger" onClick={() => setShowModal(true)}>
+          <HiMenuAlt4 />
+        </button>
+      )}
+      <aside
+        style={
+          phoneActive
+            ? {
+                width: "20rem",
+                height: "100vh",
+                position: "fixed",
+                top: 0,
+                left: showModal ? "0" : "-20rem",
+                transition: "all 0.5s",
+              }
+            : {}
+        }
+      >
+        <div className="image-div">
+          <img src={EcommerceLogo} alt="Logo" height={"50px"} width={"290px"} />
+        </div>
+        <DashboardDiv location={location} />
+        <ChartsDiv location={location} />
+        <AppsDiv location={location} />
+        {phoneActive && (
+          <button id="close-sidebar" onClick={() => setShowModal(false)}>
+            Close
+          </button>
+        )}
+      </aside>
+    </>
   );
 };
 

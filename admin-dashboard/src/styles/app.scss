@@ -34,6 +34,13 @@ a {
   color: rgb(0, 195, 0);
 }
 
+.initial {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 .admin-container {
   @include grid(1fr 4fr, 2rem);
   height: 100vh;

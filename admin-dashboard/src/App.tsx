@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Loader from "./components/Loader";
+import InitialPage from "./pages/InitialPage";
 
 // Code splitting
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -26,6 +27,9 @@ const App = () => {
     <Router>
       <Suspense fallback={<Loader />}>
         <Routes>
+          {/* initial page */}
+          <Route path="/" element={<InitialPage />} />
+          
           {/* Pages */}
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/product" element={<Products />} />
