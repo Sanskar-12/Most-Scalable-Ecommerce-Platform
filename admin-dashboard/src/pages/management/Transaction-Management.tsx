@@ -47,7 +47,6 @@ const TransactionManagement = () => {
     shippingCharges,
     tax,
     total,
-    _id,
   } = order;
 
   const updateProcessStatusHandler = () => {

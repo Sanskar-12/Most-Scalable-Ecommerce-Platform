@@ -96,7 +96,7 @@ const columns: Column<TableHOCProps>[] = [
 ];
 
 const Product = () => {
-  const [data, setData] = useState<TableHOCProps[]>(arr);
+  const [data] = useState<TableHOCProps[]>(arr);
 
   const Table = useCallback(
     () =>

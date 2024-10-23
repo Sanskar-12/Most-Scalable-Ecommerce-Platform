@@ -68,7 +68,7 @@ const arr: TableHOCProps[] = [
 ];
 
 const Transactions = () => {
-  const [data, setData] = useState<TableHOCProps[]>(arr);
+  const [data] = useState<TableHOCProps[]>(arr);
 
   const Table = useCallback(
     () =>
