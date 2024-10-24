@@ -60,9 +60,7 @@ const AdminSidebar = () => {
             : {}
         }
       >
-        <div className="image-div">
-          <img src={EcommerceLogo} alt="Logo" height={"50px"} width={"290px"} />
-        </div>
+      
         <DivOne location={location} />
         <DivTwo location={location} />
         <DivThree location={location} />
