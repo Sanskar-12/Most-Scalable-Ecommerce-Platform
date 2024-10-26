@@ -15,3 +15,7 @@ Used react chart js 2 for data visualisation in form of Charts
 
 Made a Higher Order Component.. what is HOC 
 Basically there is a function which takes the Component as a parameter and add some functionality to it and return it
+
+4. Debouncing
+
+We make less api calls using Debouncing by using setTimeout to 1000 ms after then the api is called
