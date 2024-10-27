@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ProductCard from "../components/Product-Card";
 
 const Search = () => {
   const [search, setSearch] = useState("");
@@ -6,6 +7,11 @@ const Search = () => {
   const [maxPrice, setMaxPrice] = useState(1000000);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(1);
+
+  const addToCartHandler = () => {};
+
+  const isPrevPage = page>1;
+  const isNextPage = page<4;
 
   return (
     <div className="product-search-page">
@@ -41,7 +47,42 @@ const Search = () => {
           </select>
         </div>
       </aside>
-      <main></main>
+      <main>
+        <h1>Products</h1>
+        <input
+          type="text"
+          placeholder="Search by name..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <div className="search-product-list">
+          <ProductCard
+            productId="asdfsdf"
+            name="Macbook Pro"
+            price={100000}
+            stock={232}
+            addToCartHandler={addToCartHandler}
+            photo="https://m.media-amazon.com/images/I/71ItMeqpN3L._AC_UY218_.jpg"
+          />
+        </div>
+        <article>
+          <button
+            disabled={!isPrevPage}
+            onClick={() => setPage((prev) => prev - 1)}
+          >
+            Prev
+          </button>
+          <span>
+            {page} of {4}
+          </span>
+          <button
+            disabled={!isNextPage}
+            onClick={() => setPage((prev) => prev + 1)}
+          >
+            Next
+          </button>
+        </article>
+      </main>
     </div>
   );
 };

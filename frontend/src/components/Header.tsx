@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import EcommerceLogo from "../assets/images/logo.png";
 import { useState } from "react";
 
-const user = { _id: "", role: "user" };
+const user = { _id: "sdfds", role: "admin" };
 
 const Header = () => {
   const [open, setOpen] = useState<boolean>(false);

@@ -29,6 +29,8 @@ const Search = lazy(() => import("./pages/search"));
 const Cart = lazy(() => import("./pages/cart"));
 const Shipping = lazy(() => import("./pages/shipping"));
 const Login = lazy(() => import("./pages/login"));
+const Orders = lazy(() => import("./pages/orders"));
+const OrderDetail = lazy(() => import("./pages/order-detail"));
 
 const App = () => {
   return (
@@ -44,6 +46,8 @@ const App = () => {
           {/* Only Logged In User can access */}
           <Route>
             <Route path="/shipping" element={<Shipping />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/order/:id" element={<OrderDetail />} />
           </Route>
 
           {/* Admin Route */}
