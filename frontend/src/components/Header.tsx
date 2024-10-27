@@ -5,16 +5,18 @@ import {
   FaSignOutAlt,
   FaUser,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EcommerceLogo from "../assets/images/logo.png";
 import { useState } from "react";
 
-const user = { _id: "sdf", role: "user" };
+const user = { _id: "", role: "user" };
 
 const Header = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const navigate=useNavigate()
 
   const logoutHandler = () => {
+    navigate("/login")
     setOpen(false);
   };
 

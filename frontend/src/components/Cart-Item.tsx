@@ -1,14 +1,12 @@
-import { Link } from "react-router-dom"
+import { FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 interface CartItemProps {
-  cartItem:any
+  cartItem: any;
 }
 
-const CartItem = ({
-  cartItem
-}:CartItemProps) => {
-
-  const {photo,productId,name,price,quantity,stock}=cartItem
+const CartItem = ({ cartItem }: CartItemProps) => {
+  const { photo, productId, name, price, quantity } = cartItem;
 
   return (
     <div className="cart-item">
@@ -17,8 +15,18 @@ const CartItem = ({
         <Link to={`/product/${productId}`}>{name}</Link>
         <span>₹{price}</span>
       </article>
-    </div>
-  )
-}
 
-export default CartItem
+      <div>
+        <button>-</button>
+        <p>{quantity}</p>
+        <button>+</button>
+      </div>
+
+      <button>
+        <FaTrash />
+      </button>
+    </div>
+  );
+};
+
+export default CartItem;
