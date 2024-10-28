@@ -15,7 +15,7 @@ export const newUser = async (
       photo,
       email,
       _id,
-      dob,
+      dob:new Date(dob),
       gender,
     });
 
