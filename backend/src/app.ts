@@ -9,7 +9,7 @@ import { errorMiddleware } from "./middlewares/error.js";
 config({
   path: "./.env",
 });
-console.log(process.env.PORT);
+
 const app = express();
 
 connectDB();
