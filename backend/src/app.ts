@@ -1,10 +1,11 @@
 import express from "express";
 import { config } from "dotenv";
+import { connectDB } from "./utils/features.js";
+import { errorMiddleware } from "./middlewares/error.js";
 
 // importing routes
 import userRoute from "./routes/user.js";
-import { connectDB } from "./utils/features.js";
-import { errorMiddleware } from "./middlewares/error.js";
+import productRoute from "./routes/product.js";
 
 config({
   path: "./.env",
@@ -19,6 +20,10 @@ app.use(express.json());
 
 // routes
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/product", productRoute);
+
+// static folder for images
+app.use("/uploads",express.static("uploads"))
 
 // error middleware
 app.use(errorMiddleware);

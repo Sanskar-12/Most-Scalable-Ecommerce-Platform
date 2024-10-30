@@ -6,13 +6,14 @@ import {
   newUser,
 } from "../controllers/user.js";
 import { adminOnly } from "../middlewares/auth.js";
+import singleUpload from "../middlewares/multer.js";
 
 const router = express.Router();
 
 // ----------------All Users Routes----------------//
 
 // POST - /api/v1/user/new
-router.post("/new", newUser);
+router.post("/new", singleUpload, newUser);
 
 // GET - /api/v1/user/<id>
 router.get("/:id", getUserDetails);
