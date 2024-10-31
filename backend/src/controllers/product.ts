@@ -21,7 +21,7 @@ export const newProduct = TryCatch(
       rm(photo.path, () => {
         console.log("Photo Deleted");
       });
-      
+
       return next(new ErrorHandler("Please fill all fields", 400));
     }
 
@@ -36,6 +36,107 @@ export const newProduct = TryCatch(
     return res.status(200).json({
       success: true,
       message: "Product Created Successfully",
+    });
+  }
+);
+
+export const latestProduct = TryCatch(
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    const products = await Product.find({}).sort({ createdAt: -1 }).limit(5);
+
+    return res.status(200).json({
+      success: true,
+      products,
+    });
+  }
+);
+
+export const allCategories = TryCatch(
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    const categories = await Product.distinct("category");
+
+    return res.status(200).json({
+      success: true,
+      categories,
+    });
+  }
+);
+
+export const getAdminProducts = TryCatch(
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    const products = await Product.find({});
+
+    return res.status(200).json({
+      success: true,
+      products,
+    });
+  }
+);
+
+export const getProductDetails = TryCatch(
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+
+    return res.status(200).json({
+      success: true,
+      product,
+    });
+  }
+);
+
+export const updateProductDetails = TryCatch(
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    const { id } = req.params;
+
+    const { name, price, stock, category } = req.body;
+    const photo = req.file;
+
+    const product = await Product.findById(id);
+
+    if (!product) return next(new ErrorHandler("Product Not Found", 400));
+
+    if (photo) {
+      // old photo should be deleted
+      rm(product.photo!, () => {
+        console.log("Old Photo Deleted");
+      });
+
+      product.photo = photo.path;
+    }
+
+    if (name) product.name = name;
+    if (price) product.price = price;
+    if (stock) product.stock = stock;
+    if (category) product.category = category;
+
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product Updated Successfully",
+    });
+  }
+);
+
+export const deleteProduct = TryCatch(
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+
+    if (!product) return next(new ErrorHandler("Product Not Found", 400));
+
+    rm(product.photo!, () => {
+      console.log("Photo Deleted");
+    });
+
+    await product.deleteOne();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product Deleted Successfully",
     });
   }
 );
