@@ -14,7 +14,6 @@ const router = express.Router();
 // POST - /api/v1/user/new
 router.post("/new", singleUpload, newUser);
 
-
 // GET - /api/v1/user/all
 router.get("/all", adminOnly, getAllUsers);
 

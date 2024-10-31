@@ -8,6 +8,8 @@ import {
 import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
+import { nodeCache } from "../app.js";
+import { invalidateCache } from "../utils/features.js";
 
 export const newProduct = TryCatch(
   async (
@@ -37,6 +39,8 @@ export const newProduct = TryCatch(
       photo: photo?.path,
     });
 
+    await invalidateCache({ product: true });
+
     return res.status(200).json({
       success: true,
       message: "Product Created Successfully",
@@ -46,7 +50,14 @@ export const newProduct = TryCatch(
 
 export const latestProduct = TryCatch(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    const products = await Product.find({}).sort({ createdAt: -1 }).limit(5);
+    let products;
+
+    if (nodeCache.has("latest-products")) {
+      products = JSON.parse(nodeCache.get("latest-products") as string);
+    } else {
+      products = await Product.find({}).sort({ createdAt: -1 }).limit(5);
+      nodeCache.set("latest-products", JSON.stringify(products));
+    }
 
     return res.status(200).json({
       success: true,
@@ -57,7 +68,14 @@ export const latestProduct = TryCatch(
 
 export const allCategories = TryCatch(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    const categories = await Product.distinct("category");
+    let categories;
+
+    if (nodeCache.has("categories")) {
+      categories = JSON.parse(nodeCache.get("categories") as string);
+    } else {
+      categories = await Product.distinct("category");
+      nodeCache.set("categories", JSON.stringify(categories));
+    }
 
     return res.status(200).json({
       success: true,
@@ -68,7 +86,14 @@ export const allCategories = TryCatch(
 
 export const getAdminProducts = TryCatch(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    const products = await Product.find({});
+    let products;
+
+    if (nodeCache.has("admin-products")) {
+      products = JSON.parse(nodeCache.get("admin-products") as string);
+    } else {
+      products = await Product.find({});
+      nodeCache.set("admin-products", JSON.stringify(products));
+    }
 
     return res.status(200).json({
       success: true,
@@ -81,7 +106,17 @@ export const getProductDetails = TryCatch(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const { id } = req.params;
 
-    const product = await Product.findById(id);
+    let product;
+
+    if (nodeCache.has(`product-${id}`)) {
+      product = JSON.parse(nodeCache.get(`product-${id}`) as string);
+    } else {
+      product = await Product.findById(id);
+
+      if (!product) return next(new ErrorHandler("Product Not Found", 400));
+
+      nodeCache.set(`product-${id}`, JSON.stringify(product));
+    }
 
     return res.status(200).json({
       success: true,
@@ -117,6 +152,8 @@ export const updateProductDetails = TryCatch(
 
     await product.save();
 
+    await invalidateCache({ product: true, productId: String(product._id) });
+
     return res.status(200).json({
       success: true,
       message: "Product Updated Successfully",
@@ -137,6 +174,8 @@ export const deleteProduct = TryCatch(
     });
 
     await product.deleteOne();
+
+    await invalidateCache({ product: true, productId: String(product._id) });
 
     return res.status(200).json({
       success: true,
@@ -167,6 +206,7 @@ export const getAllProductsWithFilters = TryCatch(
     }
 
     if (price) {
+      4;
       baseQuery.price = {
         $lte: Number(price),
       };

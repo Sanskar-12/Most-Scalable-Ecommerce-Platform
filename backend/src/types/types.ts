@@ -40,3 +40,11 @@ export interface BaseQueryType {
   };
   category?: string;
 }
+
+export interface InvalidateCacheType {
+  product?: boolean;
+  order?: boolean;
+  admin?: boolean;
+  productId?: string | string[];
+  orderId?: string;
+}
