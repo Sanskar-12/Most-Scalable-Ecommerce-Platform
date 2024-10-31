@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { TryCatch } from "../middlewares/error.js";
-import { NewProductsRequestBody } from "../types/types.js";
+import {
+  BaseQueryType,
+  NewProductsRequestBody,
+  SearchRequestQuery,
+} from "../types/types.js";
 import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
@@ -137,6 +141,59 @@ export const deleteProduct = TryCatch(
     return res.status(200).json({
       success: true,
       message: "Product Deleted Successfully",
+    });
+  }
+);
+
+export const getAllProductsWithFilters = TryCatch(
+  async (
+    req: Request<{}, {}, {}, SearchRequestQuery>,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    const { search, price, category, sort } = req.query;
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(process.env.LIMITPERPAGE) || 8;
+    const skip = (page - 1) * limit;
+
+    const baseQuery: BaseQueryType = {};
+
+    if (search) {
+      baseQuery.name = {
+        $regex: search,
+        $options: "i",
+      };
+    }
+
+    if (price) {
+      baseQuery.price = {
+        $lte: Number(price),
+      };
+    }
+
+    if (category) {
+      baseQuery.category = category;
+    }
+
+    const productPromise = Product.find(baseQuery)
+      .sort(sort && { price: sort === "asc" ? 1 : -1 })
+      .limit(limit)
+      .skip(skip);
+
+    const filteredProductPromise = Product.find(baseQuery);
+
+    const [products, filteredProducts] = await Promise.all([
+      productPromise,
+      filteredProductPromise,
+    ]);
+
+    const totalPages = Math.ceil(filteredProducts.length / limit);
+
+    return res.status(200).json({
+      success: true,
+      products,
+      totalPages,
     });
   }
 );

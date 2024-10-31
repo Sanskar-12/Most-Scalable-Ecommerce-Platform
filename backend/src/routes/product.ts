@@ -4,6 +4,7 @@ import {
   allCategories,
   deleteProduct,
   getAdminProducts,
+  getAllProductsWithFilters,
   getProductDetails,
   latestProduct,
   newProduct,
@@ -24,6 +25,9 @@ router.post("/new", adminOnly, singleUpload, newProduct);
 
 // GET - /api/v1/product/get/products
 router.get("/get/products", adminOnly, getAdminProducts);
+
+// GET - /api/v1/product/search
+router.get("/search", getAllProductsWithFilters);
 
 // GET - /api/v1/product/<id>
 router.get("/:id", getProductDetails);
