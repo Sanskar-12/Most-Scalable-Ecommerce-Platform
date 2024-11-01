@@ -1,11 +1,9 @@
 import express from "express";
-import { adminOnly } from "../middlewares/auth.js";
-import singleUpload from "../middlewares/multer.js";
+import { newOrder } from "../controllers/order.js";
 
 const router = express.Router();
 
-
 // POST - /api/v1/order/new
-router.post("/new",);
+router.post("/new", newOrder);
 
 export default router;

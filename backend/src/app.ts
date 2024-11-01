@@ -8,6 +8,7 @@ import morgan from "morgan";
 // importing routes
 import userRoute from "./routes/user.js";
 import productRoute from "./routes/product.js";
+import orderRoute from "./routes/order.js";
 
 config({
   path: "./.env",
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/product", productRoute);
+app.use("/api/v1/order", orderRoute);
 
 // static folder for images
 app.use("/uploads", express.static("uploads"));

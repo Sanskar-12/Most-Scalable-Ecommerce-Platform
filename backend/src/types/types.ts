@@ -57,7 +57,7 @@ type ShippingInfoType = {
   pinCode: string;
 };
 
-type OrderItemType = {
+export type OrderItemType = {
   name: string;
   photo: string;
   price: number;
