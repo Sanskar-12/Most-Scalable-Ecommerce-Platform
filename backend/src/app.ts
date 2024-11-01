@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import { connectDB } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
+import morgan from "morgan";
 
 // importing routes
 import userRoute from "./routes/user.js";
@@ -18,10 +19,15 @@ connectDB();
 
 // middlewares
 app.use(express.json());
+app.use(morgan("dev"));
 
 export const nodeCache = new NodeCache();
 
 // routes
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/product", productRoute);
 
