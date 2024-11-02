@@ -44,7 +44,7 @@ export const newOrder = TryCatch(
       product: true,
       order: true,
       admin: true,
-      productId: order.orderItems.map((product) => product.productId),
+      productId: order.orderItems.map((product) => String(product.productId)),
     });
 
     return res.status(200).json({
