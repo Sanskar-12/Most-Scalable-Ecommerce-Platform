@@ -26,7 +26,7 @@ router.post("/new", adminOnly, singleUpload, newProduct);
 // GET - /api/v1/product/get/products
 router.get("/get/products", adminOnly, getAdminProducts);
 
-// GET - /api/v1/product/search
+// GET - /api/v1/product/search?search=""&price=""&category=""&sort=""
 router.get("/search", getAllProductsWithFilters);
 
 // GET - /api/v1/product/<id>

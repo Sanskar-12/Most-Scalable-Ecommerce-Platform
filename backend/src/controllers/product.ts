@@ -52,11 +52,13 @@ export const latestProduct = TryCatch(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     let products;
 
-    if (nodeCache.has("latest-products")) {
-      products = JSON.parse(nodeCache.get("latest-products") as string);
+    const key = "latest-products";
+
+    if (nodeCache.has(key)) {
+      products = JSON.parse(nodeCache.get(key) as string);
     } else {
       products = await Product.find({}).sort({ createdAt: -1 }).limit(5);
-      nodeCache.set("latest-products", JSON.stringify(products));
+      nodeCache.set(key, JSON.stringify(products));
     }
 
     return res.status(200).json({
@@ -70,11 +72,13 @@ export const allCategories = TryCatch(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     let categories;
 
-    if (nodeCache.has("categories")) {
-      categories = JSON.parse(nodeCache.get("categories") as string);
+    const key = "categories";
+
+    if (nodeCache.has(key)) {
+      categories = JSON.parse(nodeCache.get(key) as string);
     } else {
       categories = await Product.distinct("category");
-      nodeCache.set("categories", JSON.stringify(categories));
+      nodeCache.set(key, JSON.stringify(categories));
     }
 
     return res.status(200).json({
@@ -88,11 +92,13 @@ export const getAdminProducts = TryCatch(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     let products;
 
-    if (nodeCache.has("admin-products")) {
-      products = JSON.parse(nodeCache.get("admin-products") as string);
+    let key = "admin-products";
+
+    if (nodeCache.has(key)) {
+      products = JSON.parse(nodeCache.get(key) as string);
     } else {
       products = await Product.find({});
-      nodeCache.set("admin-products", JSON.stringify(products));
+      nodeCache.set(key, JSON.stringify(products));
     }
 
     return res.status(200).json({
@@ -106,16 +112,18 @@ export const getProductDetails = TryCatch(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const { id } = req.params;
 
+    let key = `product-${id}`;
+
     let product;
 
-    if (nodeCache.has(`product-${id}`)) {
-      product = JSON.parse(nodeCache.get(`product-${id}`) as string);
+    if (nodeCache.has(key)) {
+      product = JSON.parse(nodeCache.get(key) as string);
     } else {
       product = await Product.findById(id);
 
       if (!product) return next(new ErrorHandler("Product Not Found", 400));
 
-      nodeCache.set(`product-${id}`, JSON.stringify(product));
+      nodeCache.set(key, JSON.stringify(product));
     }
 
     return res.status(200).json({
