@@ -47,6 +47,7 @@ export interface InvalidateCacheType {
   admin?: boolean;
   productId?: string | string[];
   orderId?: string;
+  userId?:string
 }
 
 type ShippingInfoType = {
