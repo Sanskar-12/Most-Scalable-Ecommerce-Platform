@@ -16,6 +16,11 @@ export interface NewProductsRequestBody {
   category: string;
 }
 
+export interface NewCouponRequestBody {
+  coupon: string;
+  amount: number;
+}
+
 export type ControllerType = (
   req: Request,
   res: Response,
@@ -47,7 +52,9 @@ export interface InvalidateCacheType {
   admin?: boolean;
   productId?: string | string[];
   orderId?: string;
-  userId?:string
+  userId?: string;
+  coupon?: boolean;
+  couponId?: string;
 }
 
 type ShippingInfoType = {

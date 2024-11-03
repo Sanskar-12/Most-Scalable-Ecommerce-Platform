@@ -22,6 +22,8 @@ export const invalidateCache = async ({
   orderId,
   admin,
   userId,
+  coupon,
+  couponId,
 }: InvalidateCacheType) => {
   if (product) {
     const productKeys: string[] = [
@@ -48,6 +50,11 @@ export const invalidateCache = async ({
     nodeCache.del(orderKeys);
   }
   if (admin) {
+  }
+  if (coupon) {
+    let couponKeys: string[] = ["all-coupons"];
+
+    nodeCache.del(couponKeys);
   }
 };
 
