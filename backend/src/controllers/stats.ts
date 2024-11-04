@@ -15,6 +15,10 @@ export const getDashboardStats = TryCatch(
     } else {
       const today = new Date();
 
+      const sixMonthsAgo = new Date();
+
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
       const thisMonth = {
         start: new Date(today.getFullYear(), today.getMonth(), 1),
         end: today,
@@ -67,6 +71,13 @@ export const getDashboardStats = TryCatch(
         },
       });
 
+      const sixMonthOrdersPromise = Order.find({
+        createdAt: {
+          $gte: sixMonthsAgo,
+          $lte: today,
+        },
+      });
+
       const [
         thisMonthProducts,
         thisMonthUsers,
@@ -74,6 +85,13 @@ export const getDashboardStats = TryCatch(
         lastMonthProducts,
         lastMonthUsers,
         lastMonthOrders,
+        productCount,
+        userCount,
+        allOrders,
+        sixMonthOrders,
+        categories,
+        maleRatio,
+        latestTransactions,
       ] = await Promise.all([
         thisMonthProductsPromise,
         thisMonthUsersPromise,
@@ -81,31 +99,111 @@ export const getDashboardStats = TryCatch(
         lastMonthProductsPromise,
         lastMonthUsersPromise,
         lastMonthOrdersPromise,
+        Product.countDocuments(),
+        User.countDocuments(),
+        Order.find({}).select("total"),
+        sixMonthOrdersPromise,
+        Product.distinct("category"),
+        User.countDocuments({ gender: "male" }),
+        Order.find({})
+          .select(["orderItems", "discount", "total", "status"])
+          .limit(4),
       ]);
 
+      let thisMonthRevenue = 0;
+      let lastMonthRevenue = 0;
 
-      const productPercentage = calculatePercentage(
-        thisMonthProducts.length,
-        lastMonthProducts.length
+      thisMonthOrders.forEach(
+        (order) => (thisMonthRevenue = thisMonthRevenue + order.total)
       );
 
-      const userPercentage = calculatePercentage(
-        thisMonthUsers.length,
-        lastMonthUsers.length
+      lastMonthOrders.forEach(
+        (order) => (lastMonthRevenue = lastMonthRevenue + order.total)
       );
 
-      const orderPercentage = calculatePercentage(
-        thisMonthOrders.length,
-        lastMonthOrders.length
-      );
-
-      stats = {
-        productPercentage,
-        userPercentage,
-        orderPercentage,
+      const changePercent = {
+        revenue: calculatePercentage(thisMonthRevenue, lastMonthRevenue),
+        products: calculatePercentage(
+          thisMonthProducts.length,
+          lastMonthProducts.length
+        ),
+        users: calculatePercentage(
+          thisMonthUsers.length,
+          lastMonthUsers.length
+        ),
+        orders: calculatePercentage(
+          thisMonthOrders.length,
+          lastMonthOrders.length
+        ),
       };
 
-      nodeCache.set("admin-stats",JSON.stringify(stats))
+      let totalRevenue = 0;
+
+      allOrders.forEach((order) => (totalRevenue = totalRevenue + order.total));
+
+      const count = {
+        totalRevenue: totalRevenue,
+        product: productCount,
+        user: userCount,
+        order: allOrders.length,
+      };
+
+      const orderCountInaMonth = new Array(6).fill(0);
+      const ordersRevenueCountInaMonth = new Array(6).fill(0);
+
+      sixMonthOrders.forEach((order) => {
+        const creationDate = order.createdAt;
+        const monthDiff =
+          (today.getMonth() - creationDate.getMonth() + 12) % 12;
+
+        if (monthDiff < 6) {
+          orderCountInaMonth[6 - monthDiff - 1] += 1;
+          ordersRevenueCountInaMonth[6 - monthDiff - 1] += order.total;
+        }
+      });
+
+      const chart = {
+        orderCountInaMonth,
+        ordersRevenueCountInaMonth,
+      };
+
+      const categoriesCountPromise = categories.map((category) =>
+        Product.countDocuments({ category })
+      );
+
+      const categoriesCount = await Promise.all(categoriesCountPromise);
+
+      const categoryCount: Record<string, number>[] = [];
+
+      categories.forEach((category, i) =>
+        categoryCount.push({
+          [category]: Math.round((categoriesCount[i] / productCount) * 100),
+        })
+      );
+
+      const userRatio = {
+        male: maleRatio,
+        female: userCount - maleRatio,
+      };
+
+      const modifiedLatestTransactions = latestTransactions.map((order) => ({
+        _id: order._id,
+        discount: order.discount,
+        amount: order.total,
+        quantity: order.orderItems.length,
+        status: order.status,
+      }));
+
+      stats = {
+        changePercent,
+        count,
+        chart,
+        categoryCount,
+        userRatio,
+        modifiedLatestTransactions,
+      };
+
+      nodeCache.set("admin-stats", JSON.stringify(stats));
     }
 
     return res.status(200).json({

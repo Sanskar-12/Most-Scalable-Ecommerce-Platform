@@ -50,6 +50,9 @@ export const invalidateCache = async ({
     nodeCache.del(orderKeys);
   }
   if (admin) {
+    let adminKeys: string[] = ["admin-stats"];
+
+    nodeCache.del(adminKeys);
   }
   if (coupon) {
     let couponKeys: string[] = ["all-coupons"];
