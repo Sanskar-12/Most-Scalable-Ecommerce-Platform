@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { InvalidateCacheType, OrderItemType } from "../types/types.js";
 import { nodeCache } from "../app.js";
 import { Product } from "../models/product.js";
@@ -50,7 +50,11 @@ export const invalidateCache = async ({
     nodeCache.del(orderKeys);
   }
   if (admin) {
-    let adminKeys: string[] = ["admin-stats", "admin-pie-charts"];
+    let adminKeys: string[] = [
+      "admin-stats",
+      "admin-pie-charts",
+      "admin-bar-charts",
+    ];
 
     nodeCache.del(adminKeys);
   }
@@ -84,4 +88,76 @@ export const calculatePercentage = (
   const percent = ((thisMonthData - lastMonthData) / lastMonthData) * 100;
 
   return Number(percent.toFixed(0));
+};
+
+interface myOrder extends Document {
+  createdAt: Date;
+  total: number;
+}
+
+type getOrderDataOfChartType = {
+  sixMonthOrders: myOrder[];
+  today: Date;
+};
+
+export const getOrderDataOfChart = ({
+  sixMonthOrders,
+  today,
+}: getOrderDataOfChartType) => {
+  const orderCountInaMonth = new Array(6).fill(0);
+  const ordersRevenueCountInaMonth = new Array(6).fill(0);
+
+  sixMonthOrders.forEach((order) => {
+    const creationDate = order.createdAt;
+    const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
+
+    if (monthDiff < 6) {
+      orderCountInaMonth[6 - monthDiff - 1] += 1;
+      ordersRevenueCountInaMonth[6 - monthDiff - 1] += order.total;
+    }
+  });
+
+  return {
+    orderCountInaMonth,
+    ordersRevenueCountInaMonth,
+  };
+};
+
+interface myDoc extends Document {
+  createdAt: Date;
+  total?: number;
+  discount?: number;
+}
+
+type getBarChartDataType = {
+  length: number;
+  docArr: myDoc[];
+  today: Date;
+  property?: string;
+};
+
+export const getBarChartData = ({
+  length,
+  docArr,
+  today,
+  property,
+}: getBarChartDataType) => {
+  const data = new Array(length).fill(0);
+
+  docArr.forEach((order) => {
+    const creationDate = order.createdAt;
+    const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
+
+    if (monthDiff < length) {
+      if (property === "total") {
+        data[length - monthDiff - 1] += order.total;
+      } else if (property === "discount") {
+        data[length - monthDiff - 1] += order.discount;
+      } else {
+        data[length - monthDiff - 1] += 1;
+      }
+    }
+  });
+
+  return data;
 };

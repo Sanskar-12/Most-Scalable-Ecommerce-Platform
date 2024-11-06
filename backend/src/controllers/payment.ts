@@ -55,11 +55,13 @@ export const allCoupons = TryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     let coupons = [];
 
-    if (nodeCache.has("all-coupons")) {
-      coupons = JSON.parse(nodeCache.get("all-coupons") as string);
+    const key = `all-coupons`;
+
+    if (nodeCache.has(key)) {
+      coupons = JSON.parse(nodeCache.get(key) as string);
     } else {
       coupons = await Coupon.find({});
-      nodeCache.set("all-coupons", JSON.stringify(coupons));
+      nodeCache.set(key, JSON.stringify(coupons));
     }
 
     return res.status(200).json({

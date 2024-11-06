@@ -5,17 +5,29 @@ All Features of this App
 If we dont enable it, all the code of all pages will load initially which will affect performance to go low
 If you enable it this loads codes of the page which is opened when you initially hit the website and not the whole bundle of codes
 so this is performance efficient.
-its done with the help of lazy loading and Suspense
+its done with the help of lazy loading and Suspense.
 
 2. Charts
 
-Used react chart js 2 for data visualisation in form of Charts
+Used react chart js 2 for data visualisation in form of Charts.
 
 3. Higher Order Component
 
 Made a Higher Order Component.. what is HOC 
-Basically there is a function which takes the Component as a parameter and add some functionality to it and return it
+Basically there is a function which takes the Component as a parameter and add some functionality to it and return it.
 
 4. Debouncing
 
-We make less api calls using Debouncing by using setTimeout to 1000 ms after then the api is called
+We make less api calls using Debouncing by using setTimeout to 1000 ms after then the api is called.
+
+5. Caching
+
+Implemented api caching for faster fetching of data using node-cache package.
+
+6. Modular Code
+
+Made every code modular and small by making extra functions.
+
+7. Implemented local photo storage capability 
+
+Implemented local photo storage capability using multer by which we can store the images locally on our hard disk.

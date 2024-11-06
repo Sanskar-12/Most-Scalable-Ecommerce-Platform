@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const schema = new mongoose.Schema(
+export const schema = new mongoose.Schema(
   {
     shippingInfo: {
       address: {

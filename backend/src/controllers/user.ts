@@ -3,6 +3,7 @@ import { User } from "../models/user.js";
 import { NewUserRequestBody } from "../types/types.js";
 import { TryCatch } from "../middlewares/error.js";
 import ErrorHandler from "../utils/utility-class.js";
+import { invalidateCache } from "../utils/features.js";
 
 export const newUser = TryCatch(
   async (
@@ -33,6 +34,8 @@ export const newUser = TryCatch(
       dob: new Date(dob),
       gender,
     });
+
+    await invalidateCache({ admin: true });
 
     return res.status(200).json({
       success: true,
@@ -76,6 +79,8 @@ export const deleteUser = TryCatch(
     if (!user) return next(new ErrorHandler("Invalid Id", 400));
 
     await user.deleteOne();
+
+    await invalidateCache({ admin: true });
 
     return res.status(200).json({
       success: true,
