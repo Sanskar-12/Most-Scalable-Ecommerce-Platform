@@ -420,5 +420,76 @@ export const getBarStats = TryCatch(
 );
 
 export const getLineStats = TryCatch(
-  async (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+    let charts;
+
+    const key = `admin-line-charts`;
+
+    if (nodeCache.has(key)) {
+      charts = JSON.parse(nodeCache.get(key) as string);
+    } else {
+      const today = new Date();
+
+      const twelveMonthsAgo = new Date();
+
+      twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+
+      let baseQuery = {
+        createdAt: {
+          $gte: twelveMonthsAgo,
+          $lte: today,
+        },
+      };
+
+      const [
+        twelveMonthAgoUsers,
+        twelveMonthAgoProducts,
+        twelveMonthAgoOrders,
+      ] = await Promise.all([
+        User.find(baseQuery).select("createdAt"),
+        Product.find(baseQuery).select("createdAt"),
+        Order.find(baseQuery).select(["createdAt", "total", "discount"]),
+      ]);
+
+      const usersCount = getBarChartData({
+        length: 12,
+        docArr: twelveMonthAgoUsers,
+        today,
+      });
+
+      const productsCount = getBarChartData({
+        length: 12,
+        docArr: twelveMonthAgoProducts,
+        today,
+      });
+
+      const revenueCount = getBarChartData({
+        length: 12,
+        docArr: twelveMonthAgoOrders,
+        today,
+        property: "total",
+      });
+
+      const discountAllotedCount = getBarChartData({
+        length: 12,
+        docArr: twelveMonthAgoOrders,
+        today,
+        property: "discount",
+      });
+
+      charts = {
+        users: usersCount,
+        products: productsCount,
+        revenue: revenueCount,
+        discountAlloted: discountAllotedCount,
+      };
+
+      nodeCache.set(key, JSON.stringify(charts));
+    }
+
+    return res.status(200).json({
+      success: true,
+      charts,
+    });
+  }
 );

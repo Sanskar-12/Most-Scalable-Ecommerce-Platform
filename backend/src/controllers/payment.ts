@@ -22,7 +22,7 @@ export const newCoupon = TryCatch(
       amount,
     });
 
-    await invalidateCache({
+    invalidateCache({
       product: false,
       order: false,
       coupon: true,
@@ -81,7 +81,7 @@ export const deleteCoupon = TryCatch(
 
     await coupon.deleteOne();
 
-    await invalidateCache({
+    invalidateCache({
       product: false,
       order: false,
       coupon: true,

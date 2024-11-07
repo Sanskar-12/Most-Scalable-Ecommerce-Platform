@@ -15,7 +15,7 @@ export const connectDB = async () => {
   }
 };
 
-export const invalidateCache = async ({
+export const invalidateCache = ({
   product,
   productId,
   order,
@@ -38,6 +38,8 @@ export const invalidateCache = async ({
       productId.forEach((id) => productKeys.push(`product-${id}`));
     }
 
+    console.log(productKeys)
+
     nodeCache.del(productKeys);
   }
   if (order) {
@@ -54,6 +56,7 @@ export const invalidateCache = async ({
       "admin-stats",
       "admin-pie-charts",
       "admin-bar-charts",
+      "admin-line-charts",
     ];
 
     nodeCache.del(adminKeys);
