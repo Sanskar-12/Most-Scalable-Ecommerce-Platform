@@ -4,6 +4,7 @@ import { connectDB } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
 import morgan from "morgan";
+import Stripe from "stripe";
 
 // importing routes
 import userRoute from "./routes/user.js";
@@ -12,18 +13,21 @@ import orderRoute from "./routes/order.js";
 import paymentRoute from "./routes/payment.js";
 import dashboardRoute from "./routes/stats.js";
 
+// env
 config({
   path: "./.env",
 });
 
 const app = express();
 
+// database connection
 connectDB();
 
 // middlewares
 app.use(express.json());
 app.use(morgan("dev"));
 
+export const stripe = new Stripe(process.env.STRIPESECRETKEY as string);
 export const nodeCache = new NodeCache();
 
 // routes
