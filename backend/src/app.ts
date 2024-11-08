@@ -5,6 +5,7 @@ import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
 import morgan from "morgan";
 import Stripe from "stripe";
+import cors from "cors";
 
 // importing routes
 import userRoute from "./routes/user.js";
@@ -26,6 +27,7 @@ connectDB();
 // middlewares
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(cors());
 
 export const stripe = new Stripe(process.env.STRIPESECRETKEY as string);
 export const nodeCache = new NodeCache();
