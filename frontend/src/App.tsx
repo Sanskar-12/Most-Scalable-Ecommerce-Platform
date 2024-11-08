@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Loader from "./components/Loader";
 import Header from "./components/Header";
+import { Toaster } from "react-hot-toast";
 
 // Admin Routes
 
@@ -85,6 +86,7 @@ const App = () => {
           </Route>
         </Routes>
       </Suspense>
+      <Toaster position="top-center" />
     </Router>
   );
 };

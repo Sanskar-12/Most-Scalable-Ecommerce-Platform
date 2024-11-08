@@ -31,3 +31,7 @@ Made every code modular and small by making extra functions.
 7. Implemented local photo storage capability 
 
 Implemented local photo storage capability using multer by which we can store the images locally on our hard disk.
+
+8. Firebase Authentication With Storage of MongoDb 
+
+Implemented Authentication with Firebase and storing the User data into our MongoDb database so that the data will be decentralised.
