@@ -8,10 +8,13 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import EcommerceLogo from "../assets/images/logo.png";
 import { useState } from "react";
+import { User } from "../types/types";
 
-const user = { _id: "", role: "" };
+interface HeaderProps {
+  user: User | null;
+}
 
-const Header = () => {
+const Header = ({ user }: HeaderProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 

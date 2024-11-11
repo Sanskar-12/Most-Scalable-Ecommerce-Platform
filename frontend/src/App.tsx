@@ -1,8 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Loader from "./components/Loader";
 import Header from "./components/Header";
 import { Toaster } from "react-hot-toast";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+import { getUser } from "./redux/api/userAPI";
+import { useDispatch, useSelector } from "react-redux";
+import { userExist, userNotExist } from "./redux/reducer/userSlice";
+import { UserInitialStateType } from "./types/reducer-types";
 
 // Admin Routes
 
@@ -34,10 +40,30 @@ const Orders = lazy(() => import("./pages/orders"));
 const OrderDetail = lazy(() => import("./pages/order-detail"));
 
 const App = () => {
-  return (
+  const dispatch = useDispatch();
+
+  const { user, loading } = useSelector(
+    (state: { userSlice: UserInitialStateType }) => state.userSlice
+  );
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const data = await getUser(user.uid);
+
+        dispatch(userExist(data.user));
+      } else {
+        dispatch(userNotExist());
+      }
+    });
+  }, [dispatch]);
+
+  return loading ? (
+    <Loader />
+  ) : (
     <Router>
       <Suspense fallback={<Loader />}>
-        <Header />
+        <Header user={user} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />

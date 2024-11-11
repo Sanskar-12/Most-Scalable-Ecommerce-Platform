@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { MessageResponseType } from "../../types/api-types";
+import { GetUserResponseType, LoginResponseType } from "../../types/api-types";
 import { User } from "../../types/types";
+import axios from "axios";
 
 export const userAPI = createApi({
   reducerPath: "userApi",
@@ -8,7 +9,7 @@ export const userAPI = createApi({
     baseUrl: `${import.meta.env.VITE_SERVER}/api/v1/user`,
   }),
   endpoints: (builder) => ({
-    login: builder.mutation<MessageResponseType, User>({
+    login: builder.mutation<LoginResponseType, User>({
       query: (user) => ({
         url: "/new",
         method: "POST",
@@ -17,5 +18,16 @@ export const userAPI = createApi({
     }),
   }),
 });
+
+export const getUser = async (userId: string): Promise<GetUserResponseType> => {
+  try {
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_SERVER}/api/v1/user/${userId}`
+    );
+    return data;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};
 
 export const { useLoginMutation } = userAPI;
