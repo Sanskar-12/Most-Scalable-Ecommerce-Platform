@@ -9,6 +9,7 @@ import { getUser } from "./redux/api/userAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./redux/reducer/userSlice";
 import { UserInitialStateType } from "./types/reducer-types";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Admin Routes
 
@@ -65,13 +66,23 @@ const App = () => {
       <Suspense fallback={<Loader />}>
         <Header user={user} />
         <Routes>
+          {/* Public Route */}
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/login"
+            element={
+              <ProtectedRoute isAuthenticated={user ? false : true}>
+                <Login />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Only Logged In User can access */}
-          <Route>
+          <Route
+            element={<ProtectedRoute isAuthenticated={user ? true : false} />}
+          >
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/order/:id" element={<OrderDetail />} />
@@ -79,13 +90,13 @@ const App = () => {
 
           {/* Admin Route */}
           <Route
-          // element={
-          //   <ProtectedRoute
-          //     isAuthenticated={true}
-          //     adminRoute={true}
-          //     isAdmin={true}
-          //   />
-          // }
+            element={
+              <ProtectedRoute
+                isAuthenticated={user ? true : false}
+                adminRoute={true}
+                isAdmin={user?.role === "admin" ? true : false}
+              />
+            }
           >
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/product" element={<Products />} />

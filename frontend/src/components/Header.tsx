@@ -9,6 +9,9 @@ import { Link, useNavigate } from "react-router-dom";
 import EcommerceLogo from "../assets/images/logo.png";
 import { useState } from "react";
 import { User } from "../types/types";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import toast from "react-hot-toast";
 
 interface HeaderProps {
   user: User | null;
@@ -18,9 +21,16 @@ const Header = ({ user }: HeaderProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const logoutHandler = () => {
-    navigate("/login");
-    setOpen(false);
+  const logoutHandler = async () => {
+    try {
+      signOut(auth);
+      toast.success("Logged out Successfully.");
+      navigate("/login");
+      setOpen(false);
+    } catch (error) {
+      console.log(error);
+      toast.error("Logged Out Failed.");
+    }
   };
 
   return (
