@@ -1,4 +1,12 @@
-import { User } from "./types";
+import { Product, User } from "./types";
+
+export type CustomError = {
+  status: number;
+  data: {
+    message: string;
+    success: boolean;
+  };
+};
 
 export type LoginResponseType = {
   success: boolean;
@@ -8,4 +16,9 @@ export type LoginResponseType = {
 export type GetUserResponseType = {
   success: boolean;
   user: User;
+};
+
+export type GetLatestProductsType = {
+  success: boolean;
+  products: Product[];
 };

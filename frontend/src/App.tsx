@@ -8,7 +8,7 @@ import { auth } from "./firebase";
 import { getUser } from "./redux/api/userAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./redux/reducer/userSlice";
-import { UserInitialStateType } from "./types/reducer-types";
+import { RootState } from "./types/reducer-types";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // Admin Routes
@@ -43,9 +43,7 @@ const OrderDetail = lazy(() => import("./pages/order-detail"));
 const App = () => {
   const dispatch = useDispatch();
 
-  const { user, loading } = useSelector(
-    (state: { userSlice: UserInitialStateType }) => state.userSlice
-  );
+  const { user, loading } = useSelector((state: RootState) => state.userSlice);
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {

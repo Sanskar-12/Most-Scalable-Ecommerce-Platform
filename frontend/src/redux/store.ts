@@ -1,14 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { userAPI } from "./api/userAPI";
 import { userSlice } from "./reducer/userSlice";
+import { productAPI } from "./api/productAPI";
 
 export const server = import.meta.env.VITE_SERVER;
 
 export const store = configureStore({
   reducer: {
     [userAPI.reducerPath]: userAPI.reducer,
+    [productAPI.reducerPath]: productAPI.reducer,
     [userSlice.name]: userSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().prepend(userAPI.middleware),
+    getDefaultMiddleware()
+      .prepend(userAPI.middleware)
+      .prepend(productAPI.middleware),
 });
