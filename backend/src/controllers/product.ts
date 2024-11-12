@@ -101,8 +101,6 @@ export const getAdminProducts = TryCatch(
       nodeCache.set(key, JSON.stringify(products));
     }
 
-    console.log(products)
-
     return res.status(200).json({
       success: true,
       products,
@@ -161,8 +159,6 @@ export const updateProductDetails = TryCatch(
     if (category) product.category = category;
 
     await product.save();
-
-    console.log(product)
 
     invalidateCache({
       product: true,
