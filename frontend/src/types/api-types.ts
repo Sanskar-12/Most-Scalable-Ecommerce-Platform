@@ -22,3 +22,14 @@ export type GetLatestProductsType = {
   success: boolean;
   products: Product[];
 };
+
+export type CategoriesType = {
+  success: boolean;
+  categories: string[];
+};
+
+export type SearchResponseType = {
+  success: boolean;
+  products: Product[];
+  totalPages: number;
+};

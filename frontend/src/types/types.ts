@@ -1,4 +1,4 @@
-export interface User {
+export type User = {
   name: string;
   email: string;
   photo: string;
@@ -6,13 +6,21 @@ export interface User {
   role: string;
   _id: string;
   dob: string;
-}
+};
 
-export interface Product {
+export type Product = {
   name: string;
   photo: string;
   price: number;
   stock: number;
   category: string;
   _id: string;
-}
+};
+
+export type SearchProductRequest = {
+  price: number;
+  page: number;
+  category: string;
+  search: string;
+  sort: string;
+};
