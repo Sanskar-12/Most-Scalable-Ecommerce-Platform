@@ -8,6 +8,11 @@ export type CustomError = {
   };
 };
 
+export type MessageResponseType = {
+  success: boolean;
+  message: string;
+};
+
 export type LoginResponseType = {
   success: boolean;
   message: string;
@@ -32,4 +37,9 @@ export type SearchResponseType = {
   success: boolean;
   products: Product[];
   totalPages: number;
+};
+
+export type NewProductType = {
+  success: boolean;
+  message: string;
 };

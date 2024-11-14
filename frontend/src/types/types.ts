@@ -24,3 +24,8 @@ export type SearchProductRequest = {
   search: string;
   sort: string;
 };
+
+export type NewProductRequest = {
+  userId: string;
+  formData: FormData;
+};
