@@ -1,22 +1,40 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
-
-const img =
-  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
+import {
+  useProductDetailQuery,
+  useUpdateProductMutation,
+} from "../../../redux/api/productAPI";
+import { useParams } from "react-router-dom";
+import { server } from "../../../redux/store";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../types/reducer-types";
+import toast from "react-hot-toast";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { MessageResponseType } from "../../../types/api-types";
 
 const Productmanagement = () => {
-  const [price, setPrice] = useState<number>(2000);
-  const [stock, setStock] = useState<number>(10);
-  const [name, setName] = useState<string>("Puma Shoes");
-  const [photo, setPhoto] = useState<string>(img);
-  const [category, setCategory] = useState<string>("footwear");
+  const params = useParams();
+
+  const { user } = useSelector((state: RootState) => state.userSlice);
+
+  const { data } = useProductDetailQuery(params.id as string);
+  const [updateProduct] = useUpdateProductMutation();
+
+  const { name, photo, price, stock, category, _id } = data?.product || {
+    _id: "",
+    name: "",
+    price: 0,
+    stock: 0,
+    category: "",
+    photo: "",
+  };
 
   const [priceUpdate, setPriceUpdate] = useState<number>(price);
   const [stockUpdate, setStockUpdate] = useState<number>(stock);
   const [nameUpdate, setNameUpdate] = useState<string>(name);
   const [categoryUpdate, setCategoryUpdate] = useState<string>(category);
-  const [photoUpdate, setPhotoUpdate] = useState<string>(photo);
+  const [photoUpdate, setPhotoUpdate] = useState<string>();
   const [photoFile, setPhotoFile] = useState<File>();
 
   const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,21 +53,59 @@ const Productmanagement = () => {
     }
   };
 
-  const submitHandler = (e: FormEvent<HTMLFormElement>): void => {
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setName(nameUpdate);
-    setPrice(priceUpdate);
-    setStock(stockUpdate);
-    setPhoto(photoUpdate);
+
+    const formData = new FormData();
+
+    if (nameUpdate) {
+      formData.set("name", nameUpdate);
+    }
+    if (priceUpdate) {
+      formData.set("price", priceUpdate.toString());
+    }
+    if (stockUpdate) {
+      formData.set("stock", stockUpdate.toString());
+    }
+    if (categoryUpdate) {
+      formData.set("category", categoryUpdate);
+    }
+    if (photoFile) {
+      formData.set("file", photoFile);
+    }
+
+    const res = await updateProduct({
+      formData,
+      userId: user?._id as string,
+      productId: _id,
+    });
+
+    if ("data" in res) {
+      toast.success(res.data?.message as string);
+      console.log(res.data);
+    } else {
+      const error = res.error as FetchBaseQueryError;
+      const message = (error.data as MessageResponseType).message;
+      toast.error(message);
+    }
   };
+
+  useEffect(() => {
+    if (data) {
+      setPriceUpdate(data.product.price);
+      setCategoryUpdate(data.product.category);
+      setNameUpdate(data.product.name);
+      setStockUpdate(data.product.stock);
+    }
+  }, [data]);
 
   return (
     <div className="admin-container">
       <AdminSidebar />
       <main className="product-management">
         <section>
-          <strong>ID - fsdfsfsggfgdf</strong>
-          <img src={photo} alt="Product" />
+          <strong>ID - {_id}</strong>
+          <img src={`${server}/${photo}`} alt="Product" />
           <p>{name}</p>
           {stock > 0 ? (
             <span className="green">{stock} Available</span>

@@ -29,3 +29,9 @@ export type NewProductRequest = {
   userId: string;
   formData: FormData;
 };
+
+export type UpdateProductRequest = {
+  userId: string;
+  productId: string;
+  formData: FormData;
+};

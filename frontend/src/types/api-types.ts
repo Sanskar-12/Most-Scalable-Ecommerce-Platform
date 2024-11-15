@@ -43,3 +43,13 @@ export type NewProductType = {
   success: boolean;
   message: string;
 };
+
+export type UpdateProductType = {
+  success: boolean;
+  message: string;
+};
+
+export type ProductDetailType = {
+  success: boolean;
+  product: Product;
+};

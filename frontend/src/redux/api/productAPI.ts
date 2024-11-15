@@ -3,9 +3,15 @@ import {
   CategoriesType,
   GetLatestProductsType,
   NewProductType,
+  ProductDetailType,
   SearchResponseType,
+  UpdateProductType,
 } from "../../types/api-types";
-import { NewProductRequest, SearchProductRequest } from "../../types/types";
+import {
+  NewProductRequest,
+  SearchProductRequest,
+  UpdateProductRequest,
+} from "../../types/types";
 
 export const productAPI = createApi({
   reducerPath: "productApi",
@@ -50,10 +56,25 @@ export const productAPI = createApi({
       },
       providesTags: ["product"],
     }),
+    productDetail: builder.query<ProductDetailType, string>({
+      query: (productId) => ({
+        url: `/${productId}`,
+        method: "GET",
+      }),
+      providesTags: ["product"],
+    }),
     newProduct: builder.mutation<NewProductType, NewProductRequest>({
       query: ({ formData, userId }) => ({
         url: `/new?id=${userId}`,
         method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["product"],
+    }),
+    updateProduct: builder.mutation<UpdateProductType, UpdateProductRequest>({
+      query: ({ formData, userId, productId }) => ({
+        url: `/${productId}?id=${userId}`,
+        method: "PUT",
         body: formData,
       }),
       invalidatesTags: ["product"],
@@ -67,4 +88,6 @@ export const {
   useCategoriesQuery,
   useSearchProductsQuery,
   useNewProductMutation,
+  useProductDetailQuery,
+  useUpdateProductMutation,
 } = productAPI;
