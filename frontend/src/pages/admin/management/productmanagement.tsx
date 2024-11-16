@@ -2,10 +2,11 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import {
+  useDeleteProductMutation,
   useProductDetailQuery,
   useUpdateProductMutation,
 } from "../../../redux/api/productAPI";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { server } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../types/reducer-types";
@@ -15,11 +16,13 @@ import { MessageResponseType } from "../../../types/api-types";
 
 const Productmanagement = () => {
   const params = useParams();
+  const navigate = useNavigate();
 
   const { user } = useSelector((state: RootState) => state.userSlice);
 
   const { data } = useProductDetailQuery(params.id as string);
   const [updateProduct] = useUpdateProductMutation();
+  const [deleteProduct] = useDeleteProductMutation();
 
   const { name, photo, price, stock, category, _id } = data?.product || {
     _id: "",
@@ -90,6 +93,23 @@ const Productmanagement = () => {
     }
   };
 
+  const deleteHandler = async () => {
+    const res = await deleteProduct({
+      userId: user?._id as string,
+      productId: _id,
+    });
+
+    if ("data" in res) {
+      toast.success(res.data?.message as string);
+      console.log(res.data);
+      navigate("/admin/product");
+    } else {
+      const error = res.error as FetchBaseQueryError;
+      const message = (error.data as MessageResponseType).message;
+      toast.error(message);
+    }
+  };
+
   useEffect(() => {
     if (data) {
       setPriceUpdate(data.product.price);
@@ -115,7 +135,7 @@ const Productmanagement = () => {
           <h3>₹{price}</h3>
         </section>
         <article>
-          <button className="product-delete-btn">
+          <button className="product-delete-btn" onClick={deleteHandler}>
             <FaTrash />
           </button>
           <form onSubmit={submitHandler}>

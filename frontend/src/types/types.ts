@@ -35,3 +35,8 @@ export type UpdateProductRequest = {
   productId: string;
   formData: FormData;
 };
+
+export type DeleteProductRequest = {
+  userId: string;
+  productId: string;
+};

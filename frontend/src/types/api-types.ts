@@ -49,6 +49,11 @@ export type UpdateProductType = {
   message: string;
 };
 
+export type DeleteProductType = {
+  success: boolean;
+  message: string;
+};
+
 export type ProductDetailType = {
   success: boolean;
   product: Product;
