@@ -13,7 +13,7 @@ export interface CartInitialStateType {
   shippingCharges: number;
   discount: number;
   total: number;
-  orderItems: CartItemsType[];
+  cartItems: CartItemsType[];
 }
 
 export interface RootState {

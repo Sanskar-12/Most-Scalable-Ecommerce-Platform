@@ -1,10 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartInitialStateType } from "../../types/reducer-types";
+import { CartItemsType } from "../../types/types";
 
 const initialState: CartInitialStateType = {
-  loading: true,
+  loading: false,
   discount: 0,
-  orderItems: [],
+  cartItems: [],
   shippingCharges: 0,
   shippingInfo: {
     address: "",
@@ -21,5 +22,32 @@ const initialState: CartInitialStateType = {
 export const cartSlice = createSlice({
   name: "cartSlice",
   initialState,
-  reducers: {},
+  reducers: {
+    addToCart: (state, action: PayloadAction<CartItemsType>) => {
+      state.loading = true;
+      // find the product in the orderItems
+      const idx = state.cartItems.findIndex(
+        (product) => product.productId === action.payload.productId
+      );
+      // if found then update the existing the product details
+      if (idx !== -1) {
+        state.cartItems[idx] = action.payload;
+      }
+      // if not then push directly
+      else {
+        state.cartItems.push(action.payload);
+      }
+      state.loading = false;
+    },
+    removeFromCart: (state, action: PayloadAction<string>) => {
+      state.loading = true;
+      // filter out the product
+      state.cartItems = state.cartItems.filter(
+        (product) => product.productId !== action.payload
+      );
+      state.loading = false;
+    },
+  },
 });
+
+export const { addToCart, removeFromCart } = cartSlice.actions;
