@@ -2,26 +2,43 @@ import { useState, useEffect } from "react";
 import { VscError } from "react-icons/vsc";
 import CartItem from "../components/Cart-Item";
 import { Link } from "react-router-dom";
-
-const cartItems = [
-  {
-    productId: "asdfsdf",
-    name: "Macbook Pro",
-    price: 100000,
-    quantity: 3,
-    stock: 232,
-    photo: "https://m.media-amazon.com/images/I/71ItMeqpN3L._AC_UY218_.jpg",
-  },
-];
-const subTotal = 4000;
-const tax = Math.round(subTotal * 0.18);
-const shippingCharges = 200;
-const discount = 200;
-const total = subTotal + tax + shippingCharges;
+import { useDispatch, useSelector } from "react-redux";
+import { CartState } from "../types/reducer-types";
+import { CartItemsType } from "../types/types";
+import toast from "react-hot-toast";
+import { addToCart, removeFromCart } from "../redux/reducer/cartSlice";
 
 const Cart = () => {
+  const dispatch = useDispatch();
+  const {
+    cartItems,
+    discount,
+    shippingCharges,
+    shippingInfo,
+    subtotal,
+    tax,
+    total,
+  } = useSelector((state: CartState) => state.cartSlice);
+
   const [coupon, setCoupon] = useState<string>("");
   const [isValidCoupon, setIsValidCoupon] = useState<boolean>(false);
+
+  const incrementHandler = (cartItem: CartItemsType) => {
+    if (cartItem.quantity >= cartItem.stock) {
+      return toast.error("Max Stock reached");
+    }
+    dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity + 1 }));
+  };
+  const decrementHandler = (cartItem: CartItemsType) => {
+    if (cartItem.quantity <= 1) {
+      return toast.error("Min Stock reached");
+    }
+    dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity - 1 }));
+  };
+  const removeHandler = (produtId: string) => {
+    dispatch(removeFromCart(produtId));
+    toast.success("Removed from cart");
+  };
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -40,14 +57,20 @@ const Cart = () => {
       <main>
         {cartItems.length > 0 ? (
           cartItems.map((cartitem, index) => (
-            <CartItem key={index} cartItem={cartitem} />
+            <CartItem
+              key={index}
+              cartItem={cartitem}
+              incrementHandler={incrementHandler}
+              decrementHandler={decrementHandler}
+              removeHandler={removeHandler}
+            />
           ))
         ) : (
           <h1>No Items Added</h1>
         )}
       </main>
       <aside>
-        <p>Subtotal: ₹{subTotal}</p>
+        <p>Subtotal: ₹{subtotal}</p>
         <p>Shipping Charges: ₹{shippingCharges}</p>
         <p>Tax: ₹{tax}</p>
         <p>

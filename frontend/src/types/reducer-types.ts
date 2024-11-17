@@ -19,3 +19,7 @@ export interface CartInitialStateType {
 export interface RootState {
   userSlice: UserInitialStateType;
 }
+
+export interface CartState {
+  cartSlice: CartInitialStateType;
+}
