@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import {
   addToCart,
   calculatePrice,
+  discountApplied,
   removeFromCart,
 } from "../redux/reducer/cartSlice";
 import axios from "axios";
@@ -46,25 +47,36 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    const timeoutId = setTimeout(async () => {
-      const { data } = await axios.get(
-        `${
-          import.meta.env.VITE_SERVER
-        }/api/v1/payment/discount?coupon=${coupon}`
-      );
-
-      if (data.success === true) {
-        setIsValidCoupon(true);
-      } else {
-        setIsValidCoupon(false);
-      }
+    const { token: cancelToken, cancel } = axios.CancelToken.source();
+    const timeoutId = setTimeout(() => {
+      axios
+        .get(
+          `${
+            import.meta.env.VITE_SERVER
+          }/api/v1/payment/discount?coupon=${coupon}`,
+          {
+            cancelToken,
+          }
+        )
+        .then((res) => {
+          dispatch(discountApplied(res.data.discount));
+          setIsValidCoupon(true);
+          dispatch(calculatePrice());
+        })
+        .catch((err) => {
+          console.log(err.response.data.error);
+          dispatch(discountApplied(0));
+          setIsValidCoupon(false);
+          dispatch(calculatePrice());
+        });
     }, 1000);
 
     return () => {
       clearTimeout(timeoutId);
+      cancel();
       setIsValidCoupon(false);
     };
-  }, [coupon]);
+  }, [coupon, dispatch]);
 
   useEffect(() => {
     dispatch(calculatePrice());
