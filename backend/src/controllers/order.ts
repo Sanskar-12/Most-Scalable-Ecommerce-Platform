@@ -38,11 +38,14 @@ export const newOrder = TryCatch(
       orderItems,
     });
 
+    console.log(user);
+
     await reduceStock(orderItems);
 
     invalidateCache({
       product: true,
       order: true,
+      userId: user,
       admin: true,
       productId: order.orderItems.map((product) => String(product.productId)),
     });
@@ -65,7 +68,7 @@ export const myOrders = TryCatch(
     if (nodeCache.has(key)) {
       orders = JSON.parse(nodeCache.get(key) as string);
     } else {
-      orders = await Order.find({ user });
+      orders = await Order.find({ user }).populate("user", "name");
       nodeCache.set(key, JSON.stringify(orders));
     }
 

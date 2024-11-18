@@ -38,8 +38,6 @@ export const invalidateCache = ({
       productId.forEach((id) => productKeys.push(`product-${id}`));
     }
 
-    console.log(productKeys)
-
     nodeCache.del(productKeys);
   }
   if (order) {
