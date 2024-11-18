@@ -61,12 +61,11 @@ export type CartItemsType = {
 export type OrderItemType = Omit<CartItemsType, "stock"> & { _id: string };
 
 export type OrderType = {
-  name: string;
-  address: string;
-  city: string;
-  country: string;
-  state: string;
-  pinCode: number;
+  shippingInfo: ShippingInfoType;
+  user: {
+    _id: string;
+    name: string;
+  };
   status: "Processing" | "Shipped" | "Delivered";
   subtotal: number;
   discount: number;

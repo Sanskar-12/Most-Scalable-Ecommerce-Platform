@@ -20,7 +20,6 @@ const Cart = () => {
     cartItems,
     discount,
     shippingCharges,
-    shippingInfo,
     subtotal,
     tax,
     total,

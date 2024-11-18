@@ -1,5 +1,8 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
+import { useSelector } from "react-redux";
+import { CartState } from "../types/reducer-types";
+import { useNavigate } from "react-router-dom";
 
 const Shipping = () => {
   const [shippingInfo, setShippingInfo] = useState({
@@ -9,6 +12,10 @@ const Shipping = () => {
     country: "",
     pinCode: "",
   });
+
+  const navigate = useNavigate();
+
+  const { cartItems } = useSelector((state: CartState) => state.cartSlice);
 
   const changeHandler = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -23,9 +30,19 @@ const Shipping = () => {
     e.preventDefault();
   };
 
+  const handleBack = () => {
+    navigate("/cart");
+  };
+
+  useEffect(() => {
+    if (cartItems.length <= 0) {
+      navigate("/");
+    }
+  }, [cartItems, navigate]);
+
   return (
     <div className="shipping">
-      <button className="back-btn">
+      <button className="back-btn" onClick={handleBack}>
         <BiArrowBack />
       </button>
       <form onSubmit={handleSubmit}>
