@@ -19,6 +19,11 @@ export type AllOrderResponseType = {
   orders: OrderType[];
 };
 
+export type OrderDetailResponseType = {
+  success: boolean;
+  order: OrderType;
+};
+
 export type MessageResponseType = {
   success: boolean;
   message: string;
@@ -79,4 +84,14 @@ export type NewOrderRequestType = {
   discount: number;
   total: number;
   orderItems: CartItemsType[];
+};
+
+export type UpdateOrdeRequestType = {
+  orderId: string;
+  userId: string;
+};
+
+export type DeleteOrdeRequestType = {
+  orderId: string;
+  userId: string;
 };
