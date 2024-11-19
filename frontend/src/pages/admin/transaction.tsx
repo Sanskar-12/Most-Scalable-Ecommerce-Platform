@@ -91,6 +91,7 @@ const Transaction = () => {
       );
     }
   }, [data]);
+
   return (
     <div className="admin-container">
       <AdminSidebar />

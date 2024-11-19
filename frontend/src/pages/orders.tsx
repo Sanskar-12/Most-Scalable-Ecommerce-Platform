@@ -1,7 +1,13 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import TableHOC from "../components/admin/TableHOC";
 import { Column } from "react-table";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../types/reducer-types";
+import { useMyOrdersQuery } from "../redux/api/orderAPI";
+import toast from "react-hot-toast";
+import { CustomError } from "../types/api-types";
+import { Skeleton } from "../components/Loader";
 
 type DataType = {
   _id: string;
@@ -36,16 +42,13 @@ const columns: Column<DataType>[] = [
 ];
 
 const Orders = () => {
-  const [rows, setRows] = useState<DataType[]>([
-    {
-      _id: "sdfsdf",
-      amount: 34,
-      quantity: 2,
-      discount: 200,
-      status: <span className="red">Processing</span>,
-      action: <Link to={`/order/sdfsdf`}>View</Link>,
-    },
-  ]);
+  const { user } = useSelector((state: RootState) => state.userSlice);
+
+  const { data, isLoading, isError, error } = useMyOrdersQuery(
+    user?._id as string
+  );
+
+  const [rows, setRows] = useState<DataType[]>([]);
 
   const Table = TableHOC<DataType>(
     columns,
@@ -55,10 +58,39 @@ const Orders = () => {
     rows.length > 6
   )();
 
+  if (isError) toast.error((error as CustomError).data.message);
+
+  useEffect(() => {
+    if (data) {
+      setRows(
+        data.orders.map((order) => ({
+          _id: order._id,
+          amount: order.total,
+          discount: order.discount,
+          status: (
+            <span
+              className={
+                order.status === "Processing"
+                  ? "red"
+                  : order.status === "Shipped"
+                  ? "green"
+                  : "purple"
+              }
+            >
+              {order.status}
+            </span>
+          ),
+          quantity: order.orderItems.length,
+          action: <Link to={`/order/${order._id}`}>View</Link>,
+        }))
+      );
+    }
+  }, [data]);
+
   return (
     <div className="container">
       <h1>My Orders</h1>
-      {Table}
+      {isLoading ? <Skeleton length={20} /> : Table}
     </div>
   );
 };
