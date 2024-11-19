@@ -9,7 +9,7 @@ import {
 } from "../../types/api-types";
 
 export const orderAPI = createApi({
-  reducerPath: "userApi",
+  reducerPath: "orderApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${import.meta.env.VITE_SERVER}/api/v1/order`,
   }),

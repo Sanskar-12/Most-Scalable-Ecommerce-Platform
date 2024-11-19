@@ -8,7 +8,6 @@ import { useAllAdminProductsQuery } from "../../redux/api/productAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../types/reducer-types";
 import { server } from "../../redux/store";
-import Loader from "../../components/admin/Loader";
 import toast from "react-hot-toast";
 import { CustomError } from "../../types/api-types";
 import { Skeleton } from "../../components/Loader";
