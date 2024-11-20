@@ -38,8 +38,6 @@ export const newOrder = TryCatch(
       orderItems,
     });
 
-    console.log(user);
-
     await reduceStock(orderItems);
 
     invalidateCache({
