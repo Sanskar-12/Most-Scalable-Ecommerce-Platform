@@ -344,6 +344,23 @@ a {
 }
 
 
+.checkout-container {
+  max-width: 400px;
+  width: 100%;
+  margin: 20rem 50rem;
+
+  >form {
+    @include flex(column, flex-start, stretch, 2rem);
+
+    >button {
+      @include btn(1rem, $color3, $color1);
+      width: 100%;
+      font-size: 1.1rem;
+    }
+  }
+}
+
+
 @keyframes loading-animation {
   to {
     transform: rotateZ(360deg);

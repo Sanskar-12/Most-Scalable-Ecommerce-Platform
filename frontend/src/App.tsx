@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./redux/reducer/userSlice";
 import { RootState } from "./types/reducer-types";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Page404 from "./components/Page404";
 
 // Admin Routes
 
@@ -40,6 +39,8 @@ const Shipping = lazy(() => import("./pages/shipping"));
 const Login = lazy(() => import("./pages/login"));
 const Orders = lazy(() => import("./pages/orders"));
 const OrderDetail = lazy(() => import("./pages/order-detail"));
+const Page404 = lazy(() => import("./components/Page404"));
+const Checkout = lazy(() => import("./pages/checkout"));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -83,6 +84,7 @@ const App = () => {
             element={<ProtectedRoute isAuthenticated={user ? true : false} />}
           >
             <Route path="/shipping" element={<Shipping />} />
+            <Route path="/pay" element={<Checkout />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/order/:id" element={<OrderDetail />} />
           </Route>
