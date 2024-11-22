@@ -6,19 +6,38 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { FormEvent, useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { OrderType } from "../types/types";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { CartState, RootState } from "../types/reducer-types";
+import { MessageResponseType, NewOrderRequestType } from "../types/api-types";
+import { useNewOrderMutation } from "../redux/api/orderAPI";
+import { resetCart } from "../redux/reducer/cartSlice";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
-const stripePromise = loadStripe(
-  "pk_test_51Oeoj3SHPisD0CABv7BDCNefHFV2VfaRgfFoLN4Hjd3BgHsBI8jJDmcQq0DFmR3NtoNlrY4gwVJDQJfXwsE1Y31M001WYmsBxi"
-);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
+  const {
+    cartItems,
+    total,
+    discount,
+    shippingCharges,
+    shippingInfo,
+    subtotal,
+    tax,
+  } = useSelector((state: CartState) => state.cartSlice);
+  const { user } = useSelector((state: RootState) => state.userSlice);
+
+  const [newOrder] = useNewOrderMutation();
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,7 +47,16 @@ const CheckoutForm = () => {
     }
     setIsProcessing(true);
 
-    const order: OrderType = {};
+    const order: NewOrderRequestType = {
+      shippingInfo,
+      orderItems: cartItems,
+      shippingCharges,
+      discount,
+      subtotal,
+      tax,
+      total,
+      user: user?._id as string,
+    };
 
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
@@ -43,6 +71,17 @@ const CheckoutForm = () => {
 
     if (paymentIntent.status === "succeeded") {
       console.log("Placed Order");
+      const res = await newOrder(order);
+      dispatch(resetCart());
+      if ("data" in res) {
+        toast.success(res.data?.message as string);
+        console.log(res.data);
+        navigate("/orders");
+      } else {
+        const error = res.error as FetchBaseQueryError;
+        const message = (error.data as MessageResponseType).message;
+        toast.error(message);
+      }
     }
     setIsProcessing(false);
   };
@@ -62,8 +101,9 @@ const CheckoutForm = () => {
 const Checkout = () => {
   const location = useLocation();
 
-  const clientSecret: string | undefined =
-    "pi_3QNa7YSHPisD0CAB16EX8UQK_secret_FD9UZRPMxGh4ALZ6M0H2hopNQ";
+  console.log(location);
+
+  const clientSecret: string | undefined = location.state;
 
   if (!clientSecret) return <Navigate to={"/shipping"} />;
 
