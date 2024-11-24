@@ -31,7 +31,13 @@ export type MessageResponseType = {
 
 export type LoginResponseType = {
   success: boolean;
+  user: User;
   message: string;
+};
+
+export type GetAllUsersResponseType = {
+  success: boolean;
+  users: User[];
 };
 
 export type GetUserResponseType = {
@@ -93,5 +99,10 @@ export type UpdateOrdeRequestType = {
 
 export type DeleteOrdeRequestType = {
   orderId: string;
+  userId: string;
+};
+
+export type DeleteUserRequestType = {
+  adminId: string;
   userId: string;
 };

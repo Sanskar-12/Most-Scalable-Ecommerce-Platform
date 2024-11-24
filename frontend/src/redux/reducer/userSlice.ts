@@ -4,7 +4,7 @@ import { User } from "../../types/types";
 
 const initialState: UserInitialStateType = {
   user: null,
-  loading: true,
+  loading: false,
 };
 
 export const userSlice = createSlice({

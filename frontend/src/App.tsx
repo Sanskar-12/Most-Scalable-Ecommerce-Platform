@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
 import Loader from "./components/Loader";
 import Header from "./components/Header";
