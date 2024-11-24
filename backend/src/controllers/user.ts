@@ -4,6 +4,7 @@ import { NewUserRequestBody } from "../types/types.js";
 import { TryCatch } from "../middlewares/error.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { invalidateCache } from "../utils/features.js";
+import { Order } from "../models/order.js";
 
 export const newUser = TryCatch(
   async (
@@ -39,6 +40,7 @@ export const newUser = TryCatch(
 
     return res.status(200).json({
       success: true,
+      user,
       message: `Welcome, ${user.name}`,
     });
   }
@@ -78,9 +80,13 @@ export const deleteUser = TryCatch(
 
     if (!user) return next(new ErrorHandler("Invalid Id", 400));
 
+    const orderPromise = Order.deleteMany({ user: id });
+
+    await Promise.all([orderPromise]);
+
     await user.deleteOne();
 
-    invalidateCache({ admin: true });
+    invalidateCache({ admin: true, order: true });
 
     return res.status(200).json({
       success: true,
