@@ -75,3 +75,40 @@ export type OrderType = {
   orderItems: OrderItemType[];
   _id: string;
 };
+
+type ChangePercentType = {
+  revenue: number;
+  products: number;
+  users: number;
+  orders: number;
+};
+
+type CountType = {
+  totalRevenue: number;
+  product: number;
+  user: number;
+  order: number;
+};
+
+type modifiedLatestTransactions = {
+  _id: string;
+  discount: number;
+  amount: number;
+  quantity: number;
+  status: string;
+};
+
+export type StatsType = {
+  changePercent: ChangePercentType;
+  count: CountType;
+  chart: {
+    orderCountInaMonth: number[];
+    ordersRevenueCountInaMonth: number[];
+  };
+  categoryCount: Record<string, number>[];
+  userRatio: {
+    male: number;
+    female: number;
+  };
+  modifiedLatestTransactions: modifiedLatestTransactions[];
+};

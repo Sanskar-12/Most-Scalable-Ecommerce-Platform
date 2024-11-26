@@ -3,6 +3,7 @@ import {
   OrderType,
   Product,
   ShippingInfoType,
+  StatsType,
   User,
 } from "./types";
 
@@ -105,4 +106,9 @@ export type DeleteOrdeRequestType = {
 export type DeleteUserRequestType = {
   adminId: string;
   userId: string;
+};
+
+export type StatsResponseType = {
+  success: boolean;
+  stats: StatsType;
 };
