@@ -112,3 +112,32 @@ export type StatsType = {
   };
   modifiedLatestTransactions: modifiedLatestTransactions[];
 };
+
+export type PieChartType = {
+  orderFullfillment: {
+    processing: number;
+    shipped: number;
+    delivered: number;
+  };
+  productCategories: Record<string, number>[];
+  stockAvailability: {
+    inStock: number;
+    outOfStock: number;
+  };
+  revenueDistribution: {
+    netMargin: number;
+    discount: number;
+    productionCost: number;
+    burnt: number;
+    marketingCost: number;
+  };
+  adminCustomers: {
+    adminUsersCount: number;
+    customerUsersCount: number;
+  };
+  usersAgeGroup: {
+    teen: number;
+    adult: number;
+    old: number;
+  };
+};

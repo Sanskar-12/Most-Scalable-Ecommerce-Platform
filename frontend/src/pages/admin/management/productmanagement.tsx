@@ -62,6 +62,17 @@ const Productmanagement = () => {
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    console.log(
+      nameUpdate,
+      priceUpdate,
+      stockUpdate,
+      categoryUpdate,
+      photoFile
+    );
+
+    if (!nameUpdate || !priceUpdate || stockUpdate < 0 || !categoryUpdate)
+      return;
+
     const formData = new FormData();
 
     if (nameUpdate) {
@@ -70,7 +81,7 @@ const Productmanagement = () => {
     if (priceUpdate) {
       formData.set("price", priceUpdate.toString());
     }
-    if (stockUpdate) {
+    if (stockUpdate >= 0) {
       formData.set("stock", stockUpdate.toString());
     }
     if (categoryUpdate) {

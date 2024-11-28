@@ -1,6 +1,7 @@
 import {
   CartItemsType,
   OrderType,
+  PieChartType,
   Product,
   ShippingInfoType,
   StatsType,
@@ -111,4 +112,9 @@ export type DeleteUserRequestType = {
 export type StatsResponseType = {
   success: boolean;
   stats: StatsType;
+};
+
+export type PieResponseType = {
+  success: boolean;
+  charts: PieChartType;
 };
