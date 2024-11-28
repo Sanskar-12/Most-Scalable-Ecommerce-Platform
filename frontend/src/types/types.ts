@@ -141,3 +141,9 @@ export type PieChartType = {
     old: number;
   };
 };
+
+export type BarChartType = {
+  products: number[];
+  users: number[];
+  orders: number[];
+};

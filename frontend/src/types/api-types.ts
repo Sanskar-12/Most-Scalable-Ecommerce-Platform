@@ -1,4 +1,5 @@
 import {
+  BarChartType,
   CartItemsType,
   OrderType,
   PieChartType,
@@ -117,4 +118,9 @@ export type StatsResponseType = {
 export type PieResponseType = {
   success: boolean;
   charts: PieChartType;
+};
+
+export type BarResponseType = {
+  success: boolean;
+  charts: BarChartType;
 };
