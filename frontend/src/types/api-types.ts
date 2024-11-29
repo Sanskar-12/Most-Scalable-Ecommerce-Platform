@@ -1,6 +1,7 @@
 import {
   BarChartType,
   CartItemsType,
+  LineChartType,
   OrderType,
   PieChartType,
   Product,
@@ -123,4 +124,9 @@ export type PieResponseType = {
 export type BarResponseType = {
   success: boolean;
   charts: BarChartType;
+};
+
+export type LineResponseType = {
+  success: boolean;
+  charts: LineChartType;
 };

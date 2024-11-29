@@ -147,3 +147,10 @@ export type BarChartType = {
   users: number[];
   orders: number[];
 };
+
+export type LineChartType = {
+  users: number[];
+  products: number[];
+  revenue: number[];
+  discountAlloted: number[];
+};

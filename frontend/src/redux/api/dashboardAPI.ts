@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   BarResponseType,
+  LineResponseType,
   PieResponseType,
   StatsResponseType,
 } from "../../types/api-types";
@@ -29,7 +30,7 @@ export const dashboardAPI = createApi({
         method: "GET",
       }),
     }),
-    line: builder.query<string, string>({
+    line: builder.query<LineResponseType, string>({
       query: (adminId) => ({
         url: `/line?id=${adminId}`,
         method: "GET",
