@@ -8,10 +8,9 @@ import Table from "../../components/admin/DashboardTable";
 import { useStatsQuery } from "../../redux/api/dashboardAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../types/reducer-types";
-import { CustomError } from "../../types/api-types";
-import toast from "react-hot-toast";
 import { Skeleton } from "../../components/Loader";
 import { getLastMonths } from "../../utils/features";
+import { Navigate } from "react-router-dom";
 
 const userImg =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJxA5cTf-5dh5Eusm0puHbvAhOrCRPtckzjA&usqp";
@@ -19,15 +18,15 @@ const userImg =
 const Dashboard = () => {
   const { user } = useSelector((state: RootState) => state.userSlice);
 
-  const { data, isError, error, isLoading } = useStatsQuery(
-    user?._id as string
-  );
+  const { data, isError, isLoading } = useStatsQuery(user?._id as string);
 
   const stats = data?.stats;
 
   const { last6Months } = getLastMonths();
 
-  if (isError) toast.error((error as CustomError).data.message);
+  if (isError) {
+    return <Navigate to={"/"} />;
+  }
 
   return (
     <div className="admin-container">

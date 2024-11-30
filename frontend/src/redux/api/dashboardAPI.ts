@@ -17,24 +17,28 @@ export const dashboardAPI = createApi({
         url: `/stats?id=${adminId}`,
         method: "GET",
       }),
+      keepUnusedDataFor: 0,
     }),
     pie: builder.query<PieResponseType, string>({
       query: (adminId) => ({
         url: `/pie?id=${adminId}`,
         method: "GET",
       }),
+      keepUnusedDataFor: 0,
     }),
     bar: builder.query<BarResponseType, string>({
       query: (adminId) => ({
         url: `/bar?id=${adminId}`,
         method: "GET",
       }),
+      keepUnusedDataFor: 0,
     }),
     line: builder.query<LineResponseType, string>({
       query: (adminId) => ({
         url: `/line?id=${adminId}`,
         method: "GET",
       }),
+      keepUnusedDataFor: 0,
     }),
   }),
 });

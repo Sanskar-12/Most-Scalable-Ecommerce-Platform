@@ -3,18 +3,19 @@ import { DoughnutChart, PieChart } from "../../../components/admin/Charts";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../types/reducer-types";
 import { usePieQuery } from "../../../redux/api/dashboardAPI";
-import { CustomError } from "../../../types/api-types";
-import toast from "react-hot-toast";
 import { Skeleton } from "../../../components/Loader";
+import { Navigate } from "react-router-dom";
 
 const PieCharts = () => {
   const { user } = useSelector((state: RootState) => state.userSlice);
 
-  const { data, isError, error, isLoading } = usePieQuery(user?._id as string);
+  const { data, isError, isLoading } = usePieQuery(user?._id as string);
 
   const charts = data?.charts;
 
-  if (isError) toast.error((error as CustomError).data.message);
+  if (isError) {
+    return <Navigate to={"/admin/dashboard"} />;
+  }
 
   return (
     <div className="admin-container">
