@@ -37,7 +37,6 @@ const TransactionManagement = () => {
     total,
     orderItems,
     user: { name },
-    _id,
   } = data?.order || {
     shippingInfo: {
       address: "",

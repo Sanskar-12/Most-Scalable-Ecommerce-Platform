@@ -16,7 +16,6 @@ import {
 } from "react-icons/ri";
 import { Link, Location, useLocation } from "react-router-dom";
 import { IconType } from "react-icons";
-import EcommerceLogo from "../../assets/images/logo.png";
 
 const AdminSidebar = () => {
   const location = useLocation();
@@ -60,7 +59,6 @@ const AdminSidebar = () => {
             : {}
         }
       >
-      
         <DivOne location={location} />
         <DivTwo location={location} />
         <DivThree location={location} />

@@ -7,7 +7,6 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import { FormEvent, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { OrderType } from "../types/types";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { CartState, RootState } from "../types/reducer-types";
