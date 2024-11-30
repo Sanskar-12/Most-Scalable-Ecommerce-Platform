@@ -50,6 +50,9 @@ const columns: Column<DataType>[] = [
   },
 ];
 
+const userImg =
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJxA5cTf-5dh5Eusm0puHbvAhOrCRPtckzjA&usqp";
+
 const Customers = () => {
   const { user } = useSelector((state: RootState) => state.userSlice);
 
@@ -95,7 +98,7 @@ const Customers = () => {
               style={{
                 borderRadius: "50%",
               }}
-              src={user?.photo}
+              src={user.photo ? user.photo : userImg}
               alt="User Image"
             />
           ),
