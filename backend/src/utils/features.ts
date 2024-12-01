@@ -6,7 +6,10 @@ import { Product } from "../models/product.js";
 export const connectDB = async () => {
   try {
     const { connection } = await mongoose.connect(
-      process.env.MONGOURI as string
+      process.env.MONGOURI as string,
+      {
+        dbName: "ecommerce",
+      }
     );
 
     console.log(`Database connected as ${connection.host}`);

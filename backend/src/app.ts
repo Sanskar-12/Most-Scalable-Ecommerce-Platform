@@ -50,5 +50,5 @@ app.use("/uploads", express.static("uploads"));
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => {
-  console.log(`Server is working on http://localhost:${process.env.PORT}`);
+  console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });
