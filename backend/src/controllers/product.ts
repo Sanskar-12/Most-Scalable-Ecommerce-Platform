@@ -9,7 +9,7 @@ import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
 import { nodeCache } from "../app.js";
-import { invalidateCache } from "../utils/features.js";
+import { invalidateCache, uploadToCloudinary } from "../utils/features.js";
 
 export const newProduct = TryCatch(
   async (
@@ -18,25 +18,29 @@ export const newProduct = TryCatch(
     next: NextFunction
   ): Promise<any> => {
     const { name, price, stock, category } = req.body;
-    const photo = req.file;
+    const photos = req.files as Express.Multer.File[] | undefined;
 
-    if (!photo) return next(new ErrorHandler("Please upload photo", 400));
+    if (!photos) return next(new ErrorHandler("Please upload photo", 400));
+
+    if (photos.length < 1)
+      return next(new ErrorHandler("Please add atleast one Photo", 400));
+
+    if (photos.length > 5)
+      return next(new ErrorHandler("You can only upload 5 Photos", 400));
 
     if (!name || !price || !stock || !category) {
-      // photo should be deleted if error comes after uploading the photo
-      rm(photo.path, () => {
-        console.log("Photo Deleted");
-      });
-
       return next(new ErrorHandler("Please fill all fields", 400));
     }
+
+    // Upload to Cloudinary
+    const photosUrl = await uploadToCloudinary(photos);
 
     await Product.create({
       name,
       price,
       stock,
       category: category.toLowerCase(),
-      photo: photo?.path,
+      photos: photosUrl,
     });
 
     invalidateCache({ product: true, admin: true });

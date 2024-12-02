@@ -1,5 +1,5 @@
 import express from "express";
-import singleUpload from "../middlewares/multer.js";
+import { multiUpload, singleUpload } from "../middlewares/multer.js";
 import {
   allCategories,
   deleteProduct,
@@ -21,7 +21,7 @@ router.get("/latest", latestProduct);
 router.get("/categories", allCategories);
 
 // POST - /api/v1/product/new
-router.post("/new", adminOnly, singleUpload, newProduct);
+router.post("/new", adminOnly, multiUpload, newProduct);
 
 // GET - /api/v1/product/get/products
 router.get("/get/products", adminOnly, getAdminProducts);

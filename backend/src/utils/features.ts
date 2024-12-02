@@ -2,6 +2,7 @@ import mongoose, { Document } from "mongoose";
 import { InvalidateCacheType, OrderItemType } from "../types/types.js";
 import { nodeCache } from "../app.js";
 import { Product } from "../models/product.js";
+import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 
 export const connectDB = async () => {
   try {
@@ -164,4 +165,25 @@ export const getBarChartData = ({
   });
 
   return data;
+};
+
+const getBase64 = (file: Express.Multer.File) =>
+  `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+export const uploadToCloudinary = async (files: Express.Multer.File[]) => {
+  const promises = files.map((file) => {
+    return new Promise<UploadApiResponse>((resolve, reject) => {
+      cloudinary.uploader.upload(getBase64(file), (error, result) => {
+        if (error) return reject(error);
+        resolve(result!);
+      });
+    });
+  });
+
+  const result = await Promise.all(promises);
+
+  return result.map((i) => ({
+    public_id: i.public_id,
+    url: i.secure_url,
+  }));
 };

@@ -6,6 +6,7 @@ import NodeCache from "node-cache";
 import morgan from "morgan";
 import Stripe from "stripe";
 import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
 
 // importing routes
 import userRoute from "./routes/user.js";
@@ -29,6 +30,14 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 
+// Cloudinary Setup
+cloudinary.config({
+  cloud_name: process.env.CLOUDNAME,
+  api_key: process.env.CLOUDAPIKEY,
+  api_secret: process.env.CLOUDAPISECRET,
+});
+
+// Stripe setup
 export const stripe = new Stripe(process.env.STRIPESECRETKEY as string);
 export const nodeCache = new NodeCache();
 
