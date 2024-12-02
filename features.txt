@@ -43,3 +43,7 @@ Made the fetching with RTK Query for in-built caching and simplifying the api fe
 10. Storing the Api Response with createSlice 
 
 Whatever the Response is coming by RTK query we are storing it in the frontend with the help of createSlice.
+
+11. Cloudinary Setup
+
+Storing all the images in Cloudinary which is an cloud image optimisation and storage tool.
