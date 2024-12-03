@@ -4,7 +4,10 @@ import { CartItemsType } from "../types/types";
 
 interface ProductCardProps {
   productId: string;
-  photo: string;
+  photos: {
+    public_id: string;
+    url: string;
+  }[];
   name: string;
   price: number;
   stock: number;
@@ -13,15 +16,17 @@ interface ProductCardProps {
 
 const ProductCard = ({
   productId,
-  photo,
+  photos,
   name,
   price,
   stock,
   addToCartHandler,
 }: ProductCardProps) => {
+  console.log(photos);
+
   return (
     <div className="product-card">
-      <img src={`${server}/${photo}`} alt={name} />
+      <img src={photos[0]?.url} alt={name} />
       <p>{name}</p>
       <span>₹{price}</span>
       <div>
@@ -29,7 +34,7 @@ const ProductCard = ({
           onClick={() =>
             addToCartHandler({
               name,
-              photo,
+              photo: photos[0]?.url,
               price,
               quantity: 1,
               productId,
