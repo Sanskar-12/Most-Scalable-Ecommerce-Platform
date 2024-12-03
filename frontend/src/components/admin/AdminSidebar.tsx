@@ -13,6 +13,7 @@ import {
   RiCoupon3Fill,
   RiDashboardFill,
   RiShoppingBag3Fill,
+  RiCoupon2Fill,
 } from "react-icons/ri";
 import { Link, Location, useLocation } from "react-router-dom";
 import { IconType } from "react-icons";
@@ -99,6 +100,12 @@ const DivOne = ({ location }: { location: Location }) => (
         url="/admin/transaction"
         text="Transaction"
         Icon={AiFillFileText}
+        location={location}
+      />
+      <Li
+        url="/admin/coupon"
+        text="Coupon"
+        Icon={RiCoupon2Fill}
         location={location}
       />
     </ul>

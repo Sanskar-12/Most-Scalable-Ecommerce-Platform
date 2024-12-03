@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { MessageResponseType } from "../../../types/api-types";
 import { useNavigate } from "react-router-dom";
+import { useFileHandler } from "6pp";
 
 const NewProduct = () => {
   const navigate = useNavigate();
@@ -21,26 +22,12 @@ const NewProduct = () => {
   const [photoPrev, setPhotoPrev] = useState<string>("");
   const [photo, setPhoto] = useState<File>();
 
-  const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const file: File | undefined = e.target.files?.[0];
-
-    const reader: FileReader = new FileReader();
-
-    if (file) {
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        if (typeof reader.result === "string") {
-          setPhotoPrev(reader.result);
-          setPhoto(file);
-        }
-      };
-    }
-  };
+  const photos = useFileHandler("multiple", 25, 5);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!name || !price || !stock || !photo || !category) return;
+    if (!name || !price || !stock || !photos || !category) return;
 
     const formData = new FormData();
 
@@ -48,7 +35,7 @@ const NewProduct = () => {
     formData.set("price", price.toString());
     formData.set("category", category);
     formData.set("stock", stock.toString());
-    if (photo) {
+    if (photos) {
       formData.set("file", photo);
     }
 
@@ -127,10 +114,20 @@ const NewProduct = () => {
 
             <div>
               <label>Photo</label>
-              <input required type="file" onChange={changeImageHandler} />
+              <input
+                required
+                type="file"
+                multiple
+                onChange={photos.changeHandler}
+              />
             </div>
 
-            {photoPrev && <img src={photoPrev} alt="New Image" />}
+            {photos.error && <p>{photos.error}</p>}
+
+            {photos.preview &&
+              photos.preview.map((photo, i) => (
+                <img key={i} src={photo} alt="Photo" />
+              ))}
             <button type="submit">Create</button>
           </form>
         </article>
