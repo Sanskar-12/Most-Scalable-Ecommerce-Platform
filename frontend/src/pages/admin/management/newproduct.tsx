@@ -19,15 +19,13 @@ const NewProduct = () => {
   const [category, setCategory] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(0);
-  const [photoPrev, setPhotoPrev] = useState<string>("");
-  const [photo, setPhoto] = useState<File>();
 
   const photos = useFileHandler("multiple", 25, 5);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!name || !price || !stock || !photos || !category) return;
+    if (!name || !price || !stock || !category) return;
 
     const formData = new FormData();
 
@@ -36,7 +34,7 @@ const NewProduct = () => {
     formData.set("category", category);
     formData.set("stock", stock.toString());
     if (photos) {
-      formData.set("file", photo);
+      photos.file.forEach((file) => formData.append("photos", file));
     }
 
     const res = await newProduct({
@@ -52,8 +50,6 @@ const NewProduct = () => {
       setCategory("");
       setPrice(0);
       setStock(0);
-      setPhoto(undefined);
-      setPhotoPrev("");
 
       navigate("/admin/product");
     } else {
