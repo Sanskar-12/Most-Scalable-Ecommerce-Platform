@@ -6,6 +6,10 @@ const schema = new mongoose.Schema(
       type: String,
       required: [true, "Please enter Name"],
     },
+    description: {
+      type: String,
+      required: [true, "Please enter Description"],
+    },
     photos: [
       {
         public_id: {
@@ -30,6 +34,10 @@ const schema = new mongoose.Schema(
       type: String,
       required: [true, "Please enter Category"],
       trim: true,
+    },
+    ratings: {
+      type: Number,
+      default: 0,
     },
   },
   {

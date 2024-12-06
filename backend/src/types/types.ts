@@ -14,6 +14,7 @@ export interface NewProductsRequestBody {
   price: number;
   stock: number;
   category: string;
+  description: string;
 }
 
 export interface NewCouponRequestBody {
