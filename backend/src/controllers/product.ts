@@ -9,7 +9,11 @@ import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs";
 import { nodeCache } from "../app.js";
-import { invalidateCache, uploadToCloudinary } from "../utils/features.js";
+import {
+  deleteFromCloudinary,
+  invalidateCache,
+  uploadToCloudinary,
+} from "../utils/features.js";
 
 export const newProduct = TryCatch(
   async (
@@ -142,19 +146,20 @@ export const updateProductDetails = TryCatch(
     const { id } = req.params;
 
     const { name, price, stock, category } = req.body;
-    const photo = req.file;
+    const photos = req.files as Express.Multer.File[] | undefined;
 
     const product = await Product.findById(id);
 
     if (!product) return next(new ErrorHandler("Product Not Found", 400));
 
-    if (photo) {
-      // old photo should be deleted
-      rm(product.photo!, () => {
-        console.log("Old Photo Deleted");
-      });
+    if (photos && photos?.length > 0) {
+      const photoUrls = await uploadToCloudinary(photos);
 
-      product.photo = photo.path;
+      const publicIds = product.photos.map((photo) => photo.public_id);
+
+      await deleteFromCloudinary(publicIds);
+
+      product.photos = photoUrls as unknown as typeof product.photos;
     }
 
     if (name) product.name = name;
@@ -185,9 +190,9 @@ export const deleteProduct = TryCatch(
 
     if (!product) return next(new ErrorHandler("Product Not Found", 400));
 
-    rm(product.photo!, () => {
-      console.log("Photo Deleted");
-    });
+    const publicIds = product.photos.map((photo) => photo.public_id);
+
+    await deleteFromCloudinary(publicIds);
 
     await product.deleteOne();
 

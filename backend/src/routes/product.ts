@@ -33,7 +33,7 @@ router.get("/search", getAllProductsWithFilters);
 router.get("/:id", getProductDetails);
 
 // PUT - /api/v1/product/<id>
-router.put("/:id", adminOnly, singleUpload, updateProductDetails);
+router.put("/:id", adminOnly, multiUpload, updateProductDetails);
 
 // DELETE - /api/v1/product/<id>
 router.delete("/:id", adminOnly, deleteProduct);
