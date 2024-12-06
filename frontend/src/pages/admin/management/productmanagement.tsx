@@ -27,20 +27,24 @@ const Productmanagement = () => {
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
 
-  const { name, photos, price, stock, category, _id } = data?.product || {
-    _id: "",
-    name: "",
-    price: 0,
-    stock: 0,
-    category: "",
-    photos: [],
-  };
+  const { name, description, photos, price, stock, category, _id } =
+    data?.product || {
+      _id: "",
+      name: "",
+      description: "",
+      price: 0,
+      stock: 0,
+      category: "",
+      photos: [],
+    };
 
   const [isLoadingButton, setIsLoadingButton] = useState(false);
 
   const [priceUpdate, setPriceUpdate] = useState<number>(price);
   const [stockUpdate, setStockUpdate] = useState<number>(stock);
   const [nameUpdate, setNameUpdate] = useState<string>(name);
+  const [descriptionUpdate, setDescriptionUpdate] =
+    useState<string>(description);
   const [categoryUpdate, setCategoryUpdate] = useState<string>(category);
 
   const photosFile = useFileHandler("multiple", 25, 5);
@@ -52,6 +56,7 @@ const Productmanagement = () => {
     try {
       if (
         !nameUpdate ||
+        !descriptionUpdate ||
         !priceUpdate ||
         stockUpdate < 0 ||
         !categoryUpdate ||
@@ -63,6 +68,9 @@ const Productmanagement = () => {
 
       if (nameUpdate) {
         formData.set("name", nameUpdate);
+      }
+      if (descriptionUpdate) {
+        formData.set("description", descriptionUpdate);
       }
       if (priceUpdate) {
         formData.set("price", priceUpdate.toString());
@@ -121,6 +129,7 @@ const Productmanagement = () => {
       setPriceUpdate(data.product.price);
       setCategoryUpdate(data.product.category);
       setNameUpdate(data.product.name);
+      setDescriptionUpdate(data.product.description);
       setStockUpdate(data.product.stock);
     }
   }, [data]);
@@ -159,6 +168,14 @@ const Productmanagement = () => {
                     placeholder="Name"
                     value={nameUpdate}
                     onChange={(e) => setNameUpdate(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label>Description</label>
+                  <textarea
+                    placeholder="Description"
+                    value={descriptionUpdate}
+                    onChange={(e) => setDescriptionUpdate(e.target.value)}
                   />
                 </div>
                 <div>
@@ -201,32 +218,29 @@ const Productmanagement = () => {
 
                 {photosFile.error && <p>{photosFile.error}</p>}
 
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "10px",
-                    maxHeight: "200px",
-                    overflowY: "auto",
-                    border: "1px solid #ccc",
-                    padding: "10px",
-                  }}
-                >
-                  {photosFile.preview &&
-                    photosFile.preview.map((photo, i) => (
+                {photosFile.preview && (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      overflowX: "auto",
+                    }}
+                  >
+                    {photosFile.preview.map((photo, i) => (
                       <img
                         key={i}
                         src={photo}
                         alt="Preview"
                         style={{
-                          width: "100px",
-                          height: "60px",
+                          width: 100,
+                          height: 100,
                           objectFit: "cover",
                           borderRadius: "8px",
                         }}
                       />
                     ))}
-                </div>
+                  </div>
+                )}
                 <button disabled={isLoadingButton} type="submit">
                   Update
                 </button>

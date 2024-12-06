@@ -22,8 +22,6 @@ const ProductCard = ({
   stock,
   addToCartHandler,
 }: ProductCardProps) => {
-  console.log(photos);
-
   return (
     <div className="product-card">
       <img src={photos[0]?.url} alt={name} />

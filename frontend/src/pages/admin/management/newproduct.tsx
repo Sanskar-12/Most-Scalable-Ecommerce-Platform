@@ -18,6 +18,7 @@ const NewProduct = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(0);
@@ -30,13 +31,14 @@ const NewProduct = () => {
     setIsLoading(true);
 
     try {
-      if (!name || !price || !stock || !category) return;
+      if (!name || !price || !stock || !category || !description) return;
 
       if (!photos.file || photos.file.length === 0) return;
 
       const formData = new FormData();
 
       formData.set("name", name);
+      formData.set("description", description);
       formData.set("price", price.toString());
       formData.set("category", category);
       formData.set("stock", stock.toString());
@@ -54,6 +56,7 @@ const NewProduct = () => {
         console.log(res.data);
 
         setName("");
+        setDescription("");
         setCategory("");
         setPrice(0);
         setStock(0);
@@ -87,6 +90,15 @@ const NewProduct = () => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label>Description</label>
+              <textarea
+                required
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div>
@@ -134,32 +146,29 @@ const NewProduct = () => {
 
             {photos.error && <p>{photos.error}</p>}
 
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "10px",
-                maxHeight: "200px",
-                overflowY: "auto",
-                border: "1px solid #ccc",
-                padding: "10px",
-              }}
-            >
-              {photos.preview &&
-                photos.preview.map((photo, i) => (
+            {photos.preview && (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  overflowX: "auto",
+                }}
+              >
+                {photos.preview.map((photo, i) => (
                   <img
                     key={i}
                     src={photo}
                     alt="Preview"
                     style={{
-                      width: "100px",
-                      height: "60px",
+                      width: 100,
+                      height: 100,
                       objectFit: "cover",
                       borderRadius: "8px",
                     }}
                   />
                 ))}
-            </div>
+              </div>
+            )}
             <button disabled={isLoading} type="submit">
               Create
             </button>
