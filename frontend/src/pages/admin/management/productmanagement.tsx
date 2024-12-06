@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import {
@@ -7,13 +7,13 @@ import {
   useUpdateProductMutation,
 } from "../../../redux/api/productAPI";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { server } from "../../../redux/store";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../types/reducer-types";
 import toast from "react-hot-toast";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { MessageResponseType } from "../../../types/api-types";
 import { Skeleton } from "../../../components/Loader";
+import { useFileHandler } from "6pp";
 
 const Productmanagement = () => {
   const params = useParams();
@@ -27,83 +27,75 @@ const Productmanagement = () => {
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
 
-  const { name, photo, price, stock, category, _id } = data?.product || {
+  const { name, photos, price, stock, category, _id } = data?.product || {
     _id: "",
     name: "",
     price: 0,
     stock: 0,
     category: "",
-    photo: "",
+    photos: [],
   };
+
+  const [isLoadingButton, setIsLoadingButton] = useState(false);
 
   const [priceUpdate, setPriceUpdate] = useState<number>(price);
   const [stockUpdate, setStockUpdate] = useState<number>(stock);
   const [nameUpdate, setNameUpdate] = useState<string>(name);
   const [categoryUpdate, setCategoryUpdate] = useState<string>(category);
-  const [photoUpdate, setPhotoUpdate] = useState<string>();
-  const [photoFile, setPhotoFile] = useState<File>();
 
-  const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const file: File | undefined = e.target.files?.[0];
-
-    const reader: FileReader = new FileReader();
-
-    if (file) {
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        if (typeof reader.result === "string") {
-          setPhotoUpdate(reader.result);
-          setPhotoFile(file);
-        }
-      };
-    }
-  };
+  const photosFile = useFileHandler("multiple", 25, 5);
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(
-      nameUpdate,
-      priceUpdate,
-      stockUpdate,
-      categoryUpdate,
-      photoFile
-    );
+    setIsLoadingButton(true);
+    try {
+      if (
+        !nameUpdate ||
+        !priceUpdate ||
+        stockUpdate < 0 ||
+        !categoryUpdate ||
+        !photosFile
+      )
+        return;
 
-    if (!nameUpdate || !priceUpdate || stockUpdate < 0 || !categoryUpdate)
-      return;
+      const formData = new FormData();
 
-    const formData = new FormData();
+      if (nameUpdate) {
+        formData.set("name", nameUpdate);
+      }
+      if (priceUpdate) {
+        formData.set("price", priceUpdate.toString());
+      }
+      if (stockUpdate >= 0) {
+        formData.set("stock", stockUpdate.toString());
+      }
+      if (categoryUpdate) {
+        formData.set("category", categoryUpdate);
+      }
+      if (photosFile.file && photosFile.file.length > 0) {
+        photosFile.file.forEach((file) => formData.append("photos", file));
+      }
 
-    if (nameUpdate) {
-      formData.set("name", nameUpdate);
-    }
-    if (priceUpdate) {
-      formData.set("price", priceUpdate.toString());
-    }
-    if (stockUpdate >= 0) {
-      formData.set("stock", stockUpdate.toString());
-    }
-    if (categoryUpdate) {
-      formData.set("category", categoryUpdate);
-    }
-    if (photoFile) {
-      formData.set("file", photoFile);
-    }
+      const res = await updateProduct({
+        formData,
+        userId: user?._id as string,
+        productId: _id,
+      });
 
-    const res = await updateProduct({
-      formData,
-      userId: user?._id as string,
-      productId: _id,
-    });
-
-    if ("data" in res) {
-      toast.success(res.data?.message as string);
-      console.log(res.data);
-    } else {
-      const error = res.error as FetchBaseQueryError;
-      const message = (error.data as MessageResponseType).message;
-      toast.error(message);
+      if ("data" in res) {
+        toast.success(res.data?.message as string);
+        console.log(res.data);
+      } else {
+        const error = res.error as FetchBaseQueryError;
+        const message = (error.data as MessageResponseType).message;
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error as string);
+    } finally {
+      setIsLoadingButton(false);
     }
   };
 
@@ -145,7 +137,7 @@ const Productmanagement = () => {
           <>
             <section>
               <strong>ID - {_id}</strong>
-              <img src={`${server}/${photo}`} alt="Product" />
+              <img src={photos[0]?.url} alt="Product" />
               <p>{name}</p>
               {stock > 0 ? (
                 <span className="green">{stock} Available</span>
@@ -197,14 +189,47 @@ const Productmanagement = () => {
                     onChange={(e) => setCategoryUpdate(e.target.value)}
                   />
                 </div>
-
                 <div>
-                  <label>Photo</label>
-                  <input type="file" onChange={changeImageHandler} />
+                  <label>Photos</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={photosFile.changeHandler}
+                  />
                 </div>
 
-                {photoUpdate && <img src={photoUpdate} alt="New Image" />}
-                <button type="submit">Update</button>
+                {photosFile.error && <p>{photosFile.error}</p>}
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "10px",
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                    border: "1px solid #ccc",
+                    padding: "10px",
+                  }}
+                >
+                  {photosFile.preview &&
+                    photosFile.preview.map((photo, i) => (
+                      <img
+                        key={i}
+                        src={photo}
+                        alt="Preview"
+                        style={{
+                          width: "100px",
+                          height: "60px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    ))}
+                </div>
+                <button disabled={isLoadingButton} type="submit">
+                  Update
+                </button>
               </form>
             </article>
           </>

@@ -7,7 +7,6 @@ import TableHOC from "../../components/admin/TableHOC";
 import { useAllAdminProductsQuery } from "../../redux/api/productAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../types/reducer-types";
-import { server } from "../../redux/store";
 import toast from "react-hot-toast";
 import { CustomError } from "../../types/api-types";
 import { Skeleton } from "../../components/Loader";
@@ -68,7 +67,7 @@ const Products = () => {
       setRows(
         data.products.map((product) => ({
           key: product._id,
-          photo: <img src={`${server}/${product.photo}`} />,
+          photo: <img src={product?.photos[0]?.url} />,
           name: product.name,
           price: product.price,
           stock: product.stock,

@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../types/reducer-types";
@@ -15,6 +15,8 @@ const NewProduct = () => {
 
   const [newProduct] = useNewProductMutation();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
@@ -25,37 +27,48 @@ const NewProduct = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!name || !price || !stock || !category) return;
+    setIsLoading(true);
 
-    const formData = new FormData();
+    try {
+      if (!name || !price || !stock || !category) return;
 
-    formData.set("name", name);
-    formData.set("price", price.toString());
-    formData.set("category", category);
-    formData.set("stock", stock.toString());
-    if (photos) {
-      photos.file.forEach((file) => formData.append("photos", file));
-    }
+      if (!photos.file || photos.file.length === 0) return;
 
-    const res = await newProduct({
-      formData,
-      userId: user?._id as string,
-    });
+      const formData = new FormData();
 
-    if ("data" in res) {
-      toast.success(res.data?.message as string);
-      console.log(res.data);
+      formData.set("name", name);
+      formData.set("price", price.toString());
+      formData.set("category", category);
+      formData.set("stock", stock.toString());
+      if (photos) {
+        photos.file.forEach((file) => formData.append("photos", file));
+      }
 
-      setName("");
-      setCategory("");
-      setPrice(0);
-      setStock(0);
+      const res = await newProduct({
+        formData,
+        userId: user?._id as string,
+      });
 
-      navigate("/admin/product");
-    } else {
-      const error = res.error as FetchBaseQueryError;
-      const message = (error.data as MessageResponseType).message;
-      toast.error(message);
+      if ("data" in res) {
+        toast.success(res.data?.message as string);
+        console.log(res.data);
+
+        setName("");
+        setCategory("");
+        setPrice(0);
+        setStock(0);
+
+        navigate("/admin/product");
+      } else {
+        const error = res.error as FetchBaseQueryError;
+        const message = (error.data as MessageResponseType).message;
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error as string);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -109,10 +122,11 @@ const NewProduct = () => {
             </div>
 
             <div>
-              <label>Photo</label>
+              <label>Photos</label>
               <input
                 required
                 type="file"
+                accept="image/*"
                 multiple
                 onChange={photos.changeHandler}
               />
@@ -120,11 +134,35 @@ const NewProduct = () => {
 
             {photos.error && <p>{photos.error}</p>}
 
-            {photos.preview &&
-              photos.preview.map((photo, i) => (
-                <img key={i} src={photo} alt="Photo" />
-              ))}
-            <button type="submit">Create</button>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                maxHeight: "200px",
+                overflowY: "auto",
+                border: "1px solid #ccc",
+                padding: "10px",
+              }}
+            >
+              {photos.preview &&
+                photos.preview.map((photo, i) => (
+                  <img
+                    key={i}
+                    src={photo}
+                    alt="Preview"
+                    style={{
+                      width: "100px",
+                      height: "60px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                  />
+                ))}
+            </div>
+            <button disabled={isLoading} type="submit">
+              Create
+            </button>
           </form>
         </article>
       </main>
