@@ -16,11 +16,11 @@ const CartItem = ({
   decrementHandler,
   removeHandler,
 }: CartItemProps) => {
-  const { photo, productId, name, price, quantity } = cartItem;
+  const { photos, productId, name, price, quantity } = cartItem;
 
   return (
     <div className="cart-item">
-      <img src={`${server}/${photo}`} alt={name} />
+      <img src={photos?.[0]?.url} alt={name} />
       <article>
         <Link to={`/product/${productId}`}>{name}</Link>
         <span>₹{price}</span>
