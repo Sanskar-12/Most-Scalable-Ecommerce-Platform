@@ -56,10 +56,7 @@ export type ShippingInfoType = {
 
 export type CartItemsType = {
   name: string;
-  photos: {
-    public_id: string;
-    url: string;
-  }[];
+  photo: string;
   price: number;
   quantity: number;
   productId: string;

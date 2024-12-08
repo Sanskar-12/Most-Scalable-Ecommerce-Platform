@@ -5,15 +5,39 @@ import { CarouselButtonType, MyntraCarousel, Slider } from "6pp";
 import { useState } from "react";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import RatingsComponent from "../components/Ratings";
+import { CartItemsType } from "../types/types";
+import toast from "react-hot-toast";
+import { addToCart } from "../redux/reducer/cartSlice";
+import { useDispatch } from "react-redux";
 
 const ProductDetails = () => {
   const params = useParams();
-
+  const dispatch = useDispatch();
   const { data, isLoading, isError, error } = useProductDetailQuery(
     params.id as string
   );
 
   const [carouselOpen, setCarouselOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+
+  const handleDecrement = () => {
+    if (quantity <= 0) return toast.error("Min Quantity reached");
+    setQuantity((prev) => prev - 1);
+  };
+
+  const handleIncrement = () => {
+    if (data?.product.stock === quantity)
+      return toast.error("Max Quantity reached");
+    setQuantity((prev) => prev + 1);
+  };
+
+  const addToCartHandler = (cartItem: CartItemsType) => {
+    if (cartItem.stock < 1) toast.error("Out of Stock");
+    else {
+      dispatch(addToCart(cartItem));
+      toast.success("Added to Cart");
+    }
+  };
 
   return (
     <div className="product-details">
@@ -47,11 +71,24 @@ const ProductDetails = () => {
               <h3>₹{data?.product.price}</h3>
               <article>
                 <div>
-                  <button>-</button>
-                  <span>0</span>
-                  <button>+</button>
+                  <button onClick={handleDecrement}>-</button>
+                  <span>{quantity}</span>
+                  <button onClick={handleIncrement}>+</button>
                 </div>
-                <button>Add To Cart</button>
+                <button
+                  onClick={() =>
+                    addToCartHandler({
+                      name: data?.product.name as string,
+                      photo: data?.product.photos[0].url as string,
+                      price: data?.product.price as number,
+                      productId: data?.product._id as string,
+                      quantity,
+                      stock: data?.product.stock as number,
+                    })
+                  }
+                >
+                  Add To Cart
+                </button>
               </article>
               <p>{data?.product.description}</p>
             </section>

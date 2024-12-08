@@ -32,7 +32,7 @@ const ProductCard = ({
           onClick={() =>
             addToCartHandler({
               name,
-              photos: photos,
+              photo: photos[0].url,
               price,
               quantity: 1,
               productId,
