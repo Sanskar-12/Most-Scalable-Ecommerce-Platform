@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useProductDetailQuery } from "../redux/api/productAPI";
 import { Skeleton } from "../components/Loader";
 import { CarouselButtonType, MyntraCarousel, Slider } from "6pp";
@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 const ProductDetails = () => {
   const params = useParams();
   const dispatch = useDispatch();
-  const { data, isLoading, isError, error } = useProductDetailQuery(
+  const { data, isLoading, isError } = useProductDetailQuery(
     params.id as string
   );
 
@@ -38,6 +38,8 @@ const ProductDetails = () => {
       toast.success("Added to Cart");
     }
   };
+
+  if (isError) return <Navigate to={"*"} />;
 
   return (
     <div className="product-details">
@@ -65,8 +67,8 @@ const ProductDetails = () => {
               )}
             </section>
             <section>
-              <h1>{data?.product.name}</h1>
               <code>{data?.product.category}</code>
+              <h1>{data?.product.name}</h1>
               <RatingsComponent value={data?.product.ratings || 0} />
               <h3>₹{data?.product.price}</h3>
               <article>

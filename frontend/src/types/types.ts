@@ -159,3 +159,9 @@ export type LineChartType = {
   revenue: number[];
   discountAlloted: number[];
 };
+
+export type CouponType = {
+  _id: string;
+  code: string;
+  amount: number;
+};
