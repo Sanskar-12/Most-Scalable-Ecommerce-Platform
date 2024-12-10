@@ -162,6 +162,6 @@ export type LineChartType = {
 
 export type CouponType = {
   _id: string;
-  code: string;
+  coupon: string;
   amount: number;
 };

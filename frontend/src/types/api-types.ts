@@ -132,7 +132,7 @@ export type LineResponseType = {
   charts: LineChartType;
 };
 
-export type AllCouponsResponse = {
+export type AllCouponsResponseType = {
   success: boolean;
   coupons: CouponType[];
 };

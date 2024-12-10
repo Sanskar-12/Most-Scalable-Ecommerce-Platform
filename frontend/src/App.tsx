@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./redux/reducer/userSlice";
 import { RootState } from "./types/reducer-types";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CouponManagement from "./pages/admin/management/couponmanagement";
 
 // Admin Routes
 
@@ -125,6 +126,7 @@ const App = () => {
               path="/admin/transaction/:id"
               element={<TransactionManagement />}
             />
+            <Route path="/admin/coupon/:id" element={<CouponManagement />} />
           </Route>
           <Route path="*" element={<Page404 />} />
         </Routes>
