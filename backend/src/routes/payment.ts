@@ -5,6 +5,7 @@ import {
   createPaymentIntent,
   deleteCoupon,
   newCoupon,
+  updateCoupon,
 } from "../controllers/payment.js";
 import { adminOnly } from "../middlewares/auth.js";
 
@@ -21,6 +22,9 @@ router.get("/discount", applyDiscount);
 
 // GET - /api/v1/payment/coupons
 router.get("/coupons", adminOnly, allCoupons);
+
+// PUT - /api/v1/payment/<id>
+router.put("/:id", adminOnly, updateCoupon);
 
 // DELETE - /api/v1/payment/<id>
 router.delete("/:id", adminOnly, deleteCoupon);

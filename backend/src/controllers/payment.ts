@@ -89,6 +89,35 @@ export const allCoupons = TryCatch(
   }
 );
 
+export const updateCoupon = TryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+
+    const { coupon, amount } = req.body;
+
+    const existingCoupon = await Coupon.findById(id);
+
+    if (!existingCoupon) return next(new ErrorHandler("Coupon not found", 400));
+
+    if (coupon) existingCoupon.coupon = coupon;
+    if (amount) existingCoupon.amount = amount;
+
+    await existingCoupon.save();
+
+    invalidateCache({
+      product: false,
+      order: false,
+      coupon: true,
+      admin: true,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `Coupon ${existingCoupon.coupon} updated Successfully`,
+    });
+  }
+);
+
 export const deleteCoupon = TryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
