@@ -165,3 +165,9 @@ export type CouponType = {
   coupon: string;
   amount: number;
 };
+
+export type UpdateCouponRequestType = {
+  couponId: string;
+  userId: string;
+  formData: FormData;
+};

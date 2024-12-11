@@ -10,12 +10,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./redux/reducer/userSlice";
 import { RootState } from "./types/reducer-types";
 import ProtectedRoute from "./components/ProtectedRoute";
-import CouponManagement from "./pages/admin/management/couponmanagement";
 
 // Admin Routes
 
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
 const Products = lazy(() => import("./pages/admin/products"));
+const Coupon = lazy(() => import("./pages/admin/coupon"));
 const Customers = lazy(() => import("./pages/admin/customers"));
 const Transaction = lazy(() => import("./pages/admin/transaction"));
 const Barcharts = lazy(() => import("./pages/admin/charts/barcharts"));
@@ -31,7 +31,9 @@ const ProductManagement = lazy(
 const TransactionManagement = lazy(
   () => import("./pages/admin/management/transactionmanagement")
 );
-const Coupon = lazy(() => import("./pages/admin/coupon"));
+const CouponManagement = lazy(
+  () => import("./pages/admin/management/couponmanagement")
+);
 
 // Customer Routes
 const Home = lazy(() => import("./pages/home"));

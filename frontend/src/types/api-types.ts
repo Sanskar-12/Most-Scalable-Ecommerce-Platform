@@ -136,3 +136,8 @@ export type AllCouponsResponseType = {
   success: boolean;
   coupons: CouponType[];
 };
+
+export type UpdateCouponResponseType = {
+  success: boolean;
+  message: string;
+};
