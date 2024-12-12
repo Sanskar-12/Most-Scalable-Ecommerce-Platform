@@ -6,8 +6,10 @@ import {
   deleteCoupon,
   newCoupon,
   updateCoupon,
+  viewCoupon,
 } from "../controllers/payment.js";
 import { adminOnly } from "../middlewares/auth.js";
+import { singleUpload } from "../middlewares/multer.js";
 
 const router = express.Router();
 
@@ -23,8 +25,11 @@ router.get("/discount", applyDiscount);
 // GET - /api/v1/payment/coupons
 router.get("/coupons", adminOnly, allCoupons);
 
+// GET - /api/v1/payment/view/coupon
+router.get("/view/coupon/:id", adminOnly, viewCoupon);
+
 // PUT - /api/v1/payment/<id>
-router.put("/:id", adminOnly, updateCoupon);
+router.put("/:id", adminOnly, singleUpload, updateCoupon);
 
 // DELETE - /api/v1/payment/<id>
 router.delete("/:id", adminOnly, deleteCoupon);

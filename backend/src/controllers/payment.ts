@@ -89,6 +89,28 @@ export const allCoupons = TryCatch(
   }
 );
 
+export const viewCoupon = TryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+
+    const existingCoupon = await Coupon.findById(id);
+
+    if (!existingCoupon) return next(new ErrorHandler("Coupon not found", 400));
+
+    invalidateCache({
+      product: false,
+      order: false,
+      coupon: true,
+      admin: true,
+    });
+
+    return res.status(200).json({
+      success: true,
+      coupon: existingCoupon,
+    });
+  }
+);
+
 export const updateCoupon = TryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
