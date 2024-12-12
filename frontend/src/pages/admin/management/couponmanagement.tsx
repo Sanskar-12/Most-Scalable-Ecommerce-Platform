@@ -1,10 +1,13 @@
 import { FaTrash } from "react-icons/fa";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { Skeleton } from "../../../components/Loader";
-import { FormEvent, useState } from "react";
-import { useUpdateCouponMutation } from "../../../redux/api/couponAPI";
+import { FormEvent, useEffect, useState } from "react";
+import {
+  useUpdateCouponMutation,
+  useViewCouponQuery,
+} from "../../../redux/api/couponAPI";
 import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../types/reducer-types";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -19,9 +22,12 @@ const CouponManagement = () => {
 
   const { user } = useSelector((state: RootState) => state.userSlice);
 
-  const [updateCoupon] = useUpdateCouponMutation();
+  const { data, isLoading, isError } = useViewCouponQuery({
+    couponId: params.id as string,
+    userId: user?._id as string,
+  });
 
-  const isLoading = false;
+  const [updateCoupon] = useUpdateCouponMutation();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,6 +65,15 @@ const CouponManagement = () => {
       setIsLoadingButton(false);
     }
   };
+
+  useEffect(() => {
+    if (data) {
+      setCouponCode(data.coupon.coupon);
+      setAmountUpdate(data.coupon.amount);
+    }
+  }, [data]);
+
+  if (isError) return <Navigate to={"/404"} />;
 
   return (
     <div className="admin-container">

@@ -2,8 +2,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   AllCouponsResponseType,
   UpdateCouponResponseType,
+  ViewCouponResponseType,
 } from "../../types/api-types";
-import { UpdateCouponRequestType } from "../../types/types";
+import {
+  UpdateCouponRequestType,
+  ViewCouponRequestType,
+} from "../../types/types";
 
 export const couponAPI = createApi({
   reducerPath: "couponApi",
@@ -15,6 +19,13 @@ export const couponAPI = createApi({
     getAllCoupons: builder.query<AllCouponsResponseType, string>({
       query: (userId) => ({
         url: `/coupons?id=${userId}`,
+        method: "GET",
+      }),
+      providesTags: ["coupons"],
+    }),
+    viewCoupon: builder.query<ViewCouponResponseType, ViewCouponRequestType>({
+      query: ({ couponId, userId }) => ({
+        url: `/view/coupon/${couponId}?id=${userId}`,
         method: "GET",
       }),
       providesTags: ["coupons"],
@@ -33,4 +44,8 @@ export const couponAPI = createApi({
   }),
 });
 
-export const { useGetAllCouponsQuery, useUpdateCouponMutation } = couponAPI;
+export const {
+  useGetAllCouponsQuery,
+  useUpdateCouponMutation,
+  useViewCouponQuery,
+} = couponAPI;

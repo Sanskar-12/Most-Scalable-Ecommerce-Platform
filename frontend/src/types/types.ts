@@ -171,3 +171,8 @@ export type UpdateCouponRequestType = {
   userId: string;
   formData: FormData;
 };
+
+export type ViewCouponRequestType = {
+  couponId: string;
+  userId: string;
+};

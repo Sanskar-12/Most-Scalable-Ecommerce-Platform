@@ -141,3 +141,8 @@ export type UpdateCouponResponseType = {
   success: boolean;
   message: string;
 };
+
+export type ViewCouponResponseType = {
+  success: boolean;
+  coupon: CouponType;
+};
