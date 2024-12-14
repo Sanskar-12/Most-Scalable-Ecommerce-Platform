@@ -25,6 +25,7 @@ const CouponCreation = lazy(() => import("./pages/admin/apps/coupon"));
 const Stopwatch = lazy(() => import("./pages/admin/apps/stopwatch"));
 const Toss = lazy(() => import("./pages/admin/apps/toss"));
 const NewProduct = lazy(() => import("./pages/admin/management/newproduct"));
+const NewCoupon = lazy(() => import("./pages/admin/management/newCoupon"));
 const ProductManagement = lazy(
   () => import("./pages/admin/management/productmanagement")
 );
@@ -128,6 +129,7 @@ const App = () => {
               path="/admin/transaction/:id"
               element={<TransactionManagement />}
             />
+            <Route path="/admin/coupon/new" element={<NewCoupon />} />
             <Route path="/admin/coupon/:id" element={<CouponManagement />} />
           </Route>
           <Route path="*" element={<Page404 />} />

@@ -1,10 +1,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   AllCouponsResponseType,
+  DeleteCouponResponseType,
+  NewCouponResponseType,
   UpdateCouponResponseType,
   ViewCouponResponseType,
 } from "../../types/api-types";
 import {
+  DeleteCouponRequestType,
+  NewCouponRequestType,
   UpdateCouponRequestType,
   ViewCouponRequestType,
 } from "../../types/types";
@@ -41,6 +45,24 @@ export const couponAPI = createApi({
       }),
       invalidatesTags: ["coupons"],
     }),
+    deleteCoupon: builder.mutation<
+      DeleteCouponResponseType,
+      DeleteCouponRequestType
+    >({
+      query: ({ couponId, userId }) => ({
+        url: `/${couponId}?id=${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["coupons"],
+    }),
+    newCoupon: builder.mutation<NewCouponResponseType, NewCouponRequestType>({
+      query: ({ userId, formData }) => ({
+        url: `/coupon/new?id=${userId}`,
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["coupons"],
+    }),
   }),
 });
 
@@ -48,4 +70,6 @@ export const {
   useGetAllCouponsQuery,
   useUpdateCouponMutation,
   useViewCouponQuery,
+  useDeleteCouponMutation,
+  useNewCouponMutation,
 } = couponAPI;

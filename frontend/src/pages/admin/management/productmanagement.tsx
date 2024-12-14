@@ -115,7 +115,6 @@ const Productmanagement = () => {
 
     if ("data" in res) {
       toast.success(res.data?.message as string);
-      console.log(res.data);
       navigate("/admin/product");
     } else {
       const error = res.error as FetchBaseQueryError;

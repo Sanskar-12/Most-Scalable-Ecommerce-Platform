@@ -3,11 +3,12 @@ import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { Skeleton } from "../../../components/Loader";
 import { FormEvent, useEffect, useState } from "react";
 import {
+  useDeleteCouponMutation,
   useUpdateCouponMutation,
   useViewCouponQuery,
 } from "../../../redux/api/couponAPI";
 import toast from "react-hot-toast";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../types/reducer-types";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -15,6 +16,7 @@ import { MessageResponseType } from "../../../types/api-types";
 
 const CouponManagement = () => {
   const params = useParams();
+  const navigate = useNavigate();
 
   const [couponCode, setCouponCode] = useState("");
   const [amountUpdate, setAmountUpdate] = useState(0);
@@ -28,6 +30,7 @@ const CouponManagement = () => {
   });
 
   const [updateCoupon] = useUpdateCouponMutation();
+  const [deleteCoupon] = useDeleteCouponMutation();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,6 +69,22 @@ const CouponManagement = () => {
     }
   };
 
+  const deleteHandler = async () => {
+    const res = await deleteCoupon({
+      userId: user?._id as string,
+      couponId: params.id as string,
+    });
+
+    if ("data" in res) {
+      toast.success(res.data?.message as string);
+      navigate("/admin/coupon");
+    } else {
+      const error = res.error as FetchBaseQueryError;
+      const message = (error.data as MessageResponseType).message;
+      toast.error(message);
+    }
+  };
+
   useEffect(() => {
     if (data) {
       setCouponCode(data.coupon.coupon);
@@ -84,7 +103,7 @@ const CouponManagement = () => {
         ) : (
           <>
             <article>
-              <button className="product-delete-btn">
+              <button className="product-delete-btn" onClick={deleteHandler}>
                 <FaTrash />
               </button>
               <form onSubmit={handleSubmit}>

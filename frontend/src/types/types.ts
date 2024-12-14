@@ -176,3 +176,13 @@ export type ViewCouponRequestType = {
   couponId: string;
   userId: string;
 };
+
+export type DeleteCouponRequestType = {
+  couponId: string;
+  userId: string;
+};
+
+export type NewCouponRequestType = {
+  userId: string;
+  formData: FormData;
+};

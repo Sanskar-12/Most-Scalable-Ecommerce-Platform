@@ -73,7 +73,7 @@ const Coupon = () => {
     <div className="admin-container">
       <AdminSidebar />
       <main>{isLoading ? <Skeleton length={20} /> : Table}</main>
-      <Link to="/admin/product/new" className="create-product-btn">
+      <Link to="/admin/coupon/new" className="create-product-btn">
         <FaPlus />
       </Link>
     </div>

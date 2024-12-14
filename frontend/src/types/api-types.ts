@@ -146,3 +146,13 @@ export type ViewCouponResponseType = {
   success: boolean;
   coupon: CouponType;
 };
+
+export type DeleteCouponResponseType = {
+  success: boolean;
+  message: string;
+};
+
+export type NewCouponResponseType = {
+  success: boolean;
+  message: string;
+};
