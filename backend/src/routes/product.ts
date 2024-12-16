@@ -1,6 +1,7 @@
 import express from "express";
 import { multiUpload, singleUpload } from "../middlewares/multer.js";
 import {
+  addOrUpdateReview,
   allCategories,
   deleteProduct,
   getAdminProducts,
@@ -37,5 +38,8 @@ router.put("/:id", adminOnly, multiUpload, updateProductDetails);
 
 // DELETE - /api/v1/product/<id>
 router.delete("/:id", adminOnly, deleteProduct);
+
+// POST - /api/v1/add/update/review/<id>
+router.post("/add/update/review/:id", addOrUpdateReview);
 
 export default router;

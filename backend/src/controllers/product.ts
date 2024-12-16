@@ -14,6 +14,8 @@ import {
   invalidateCache,
   uploadToCloudinary,
 } from "../utils/features.js";
+import { User } from "../models/user.js";
+import { Review } from "../models/review.js";
 
 export const newProduct = TryCatch(
   async (
@@ -264,3 +266,47 @@ export const getAllProductsWithFilters = TryCatch(
     });
   }
 );
+
+export const addOrUpdateReview = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.query.id);
+
+  if (!user) return next(new ErrorHandler("Not logged in", 400));
+
+  const product = await Product.findById(req.params.id);
+
+  if (!product) return next(new ErrorHandler("Product not found", 400));
+
+  const { comment, rating } = req.body;
+
+  const alreadyReviewed = await Review.findOne({
+    user: user._id,
+    product: product._id,
+  });
+
+  if (alreadyReviewed) {
+    if (comment) alreadyReviewed.comment = comment;
+    alreadyReviewed.rating = rating;
+
+    await alreadyReviewed.save();
+  } else {
+    await Review.create({
+      comment,
+      rating,
+      user: user._id,
+      product: product._id,
+    });
+  }
+
+  invalidateCache({
+    product: true,
+    productId: String(product._id),
+    admin: true,
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: alreadyReviewed
+      ? "Review Updated Successfully"
+      : "Review Added Successfully",
+  });
+});
