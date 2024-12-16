@@ -68,7 +68,6 @@ const TransactionManagement = () => {
     if ("data" in res) {
       if (status === "Delivered") return toast.error("Already Delivered");
       toast.success(res.data?.message as string);
-      console.log(res.data);
       navigate("/admin/transaction");
     } else {
       const error = res.error as FetchBaseQueryError;
@@ -85,7 +84,6 @@ const TransactionManagement = () => {
 
     if ("data" in res) {
       toast.success(res.data?.message as string);
-      console.log(res.data);
       navigate("/admin/transaction");
     } else {
       const error = res.error as FetchBaseQueryError;
@@ -176,7 +174,7 @@ const ProductCard = ({
   productId,
 }: OrderItemType) => (
   <div className="transaction-product-card">
-    <img src={`${server}/${photo}`} alt={name} />
+    <img src={`${photo}`} alt={name} />
     <Link to={`/product/${productId}`}>{name}</Link>
     <span>
       ₹{price} X {quantity} = ₹{price * quantity}
