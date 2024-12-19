@@ -4,8 +4,10 @@ import {
   addOrUpdateReview,
   allCategories,
   deleteProduct,
+  deleteReview,
   getAdminProducts,
   getAllProductsWithFilters,
+  getAllReviewsOfProduct,
   getProductDetails,
   latestProduct,
   newProduct,
@@ -39,7 +41,13 @@ router.put("/:id", adminOnly, multiUpload, updateProductDetails);
 // DELETE - /api/v1/product/<id>
 router.delete("/:id", adminOnly, deleteProduct);
 
+// GET - /api/v1/get/all/reviews/<id>
+router.get("/get/all/review/:id", getAllReviewsOfProduct);
+
 // POST - /api/v1/add/update/review/<id>
-router.post("/add/update/review/:id", addOrUpdateReview);
+router.post("/add/update/review/:id", multiUpload, addOrUpdateReview);
+
+// DELETE - /api/v1/delete/review/<id>
+router.delete("/delete/review/:id", deleteReview);
 
 export default router;

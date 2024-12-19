@@ -11,6 +11,7 @@ import { rm } from "fs";
 import { nodeCache } from "../app.js";
 import {
   deleteFromCloudinary,
+  findAverageRating,
   invalidateCache,
   uploadToCloudinary,
 } from "../utils/features.js";
@@ -267,6 +268,19 @@ export const getAllProductsWithFilters = TryCatch(
   }
 );
 
+export const getAllReviewsOfProduct = TryCatch(async (req, res, next) => {
+  const reviews = await Review.find({
+    product: req.params.id,
+  })
+    .populate("user", "name photo")
+    .sort({ updatedAt: -1 });
+
+  return res.status(200).json({
+    success: true,
+    reviews,
+  });
+});
+
 export const addOrUpdateReview = TryCatch(async (req, res, next) => {
   const user = await User.findById(req.query.id);
 
@@ -297,6 +311,13 @@ export const addOrUpdateReview = TryCatch(async (req, res, next) => {
     });
   }
 
+  const { avgRatings, totalNoOfReviews } = await findAverageRating(product._id);
+
+  product.ratings = avgRatings;
+  product.noOfReviews = totalNoOfReviews;
+
+  await product.save();
+
   invalidateCache({
     product: true,
     productId: String(product._id),
@@ -308,5 +329,43 @@ export const addOrUpdateReview = TryCatch(async (req, res, next) => {
     message: alreadyReviewed
       ? "Review Updated Successfully"
       : "Review Added Successfully",
+  });
+});
+
+export const deleteReview = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.query.id);
+
+  if (!user) return next(new ErrorHandler("Not logged in", 400));
+
+  const review = await Review.findById(req.params.id);
+
+  if (!review) return next(new ErrorHandler("Review not found", 400));
+
+  const isAuthentic = review.user.toString() === user._id.toString();
+
+  if (!isAuthentic) return next(new ErrorHandler("Not Authorised", 400));
+
+  await review.deleteOne();
+
+  const product = await Product.findById(review.product);
+
+  if (!product) return next(new ErrorHandler("Product not found", 400));
+
+  const { avgRatings, totalNoOfReviews } = await findAverageRating(product._id);
+
+  product.ratings = avgRatings;
+  product.noOfReviews = totalNoOfReviews;
+
+  await product.save();
+
+  invalidateCache({
+    product: true,
+    productId: String(review.product),
+    admin: true,
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Review Deleted Successfully",
   });
 });

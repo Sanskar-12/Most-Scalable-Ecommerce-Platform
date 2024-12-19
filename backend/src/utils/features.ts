@@ -3,6 +3,7 @@ import { InvalidateCacheType, OrderItemType } from "../types/types.js";
 import { nodeCache } from "../app.js";
 import { Product } from "../models/product.js";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
+import { Review } from "../models/review.js";
 
 export const connectDB = async () => {
   try {
@@ -199,4 +200,19 @@ export const deleteFromCloudinary = async (publicIds: string[]) => {
   });
 
   await Promise.all(promises);
+};
+
+export const findAverageRating = async (productId: mongoose.Types.ObjectId) => {
+  const reviews = await Review.find({ product: productId });
+
+  let totalRatings = 0;
+
+  reviews.forEach((review) => (totalRatings = totalRatings + review.rating));
+
+  const avgRatings = Math.floor(totalRatings / reviews.length) || 0;
+
+  return {
+    avgRatings,
+    totalNoOfReviews: reviews.length,
+  };
 };
