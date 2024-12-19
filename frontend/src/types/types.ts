@@ -19,7 +19,19 @@ export type Product = {
   stock: number;
   category: string;
   ratings: number;
+  noOfReviews: number;
   _id: string;
+};
+
+export type Review = {
+  _id: string;
+  comment: string;
+  rating: number;
+  user: {
+    name: string;
+    photo: string;
+  };
+  product: string;
 };
 
 export type SearchProductRequest = {
@@ -44,6 +56,12 @@ export type UpdateProductRequest = {
 export type DeleteProductRequest = {
   userId: string;
   productId: string;
+};
+
+export type AddOrUpdateReviewRequest = {
+  userId: string;
+  productId: string;
+  formData: FormData;
 };
 
 export type ShippingInfoType = {

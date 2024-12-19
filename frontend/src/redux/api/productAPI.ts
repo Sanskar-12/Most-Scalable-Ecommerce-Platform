@@ -1,7 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
+  AddOrUpdateReviewResponseType,
   CategoriesType,
   DeleteProductType,
+  GetAllReviewsType,
   GetLatestProductsType,
   NewProductType,
   ProductDetailType,
@@ -9,6 +11,7 @@ import {
   UpdateProductType,
 } from "../../types/api-types";
 import {
+  AddOrUpdateReviewRequest,
   DeleteProductRequest,
   NewProductRequest,
   SearchProductRequest,
@@ -88,6 +91,24 @@ export const productAPI = createApi({
       }),
       invalidatesTags: ["product"],
     }),
+    getAllReviews: builder.query<GetAllReviewsType, string>({
+      query: (productId) => ({
+        url: `/get/all/review/${productId}`,
+        method: "GET",
+      }),
+      providesTags: ["product"],
+    }),
+    addOrUpdateReview: builder.mutation<
+      AddOrUpdateReviewResponseType,
+      AddOrUpdateReviewRequest
+    >({
+      query: ({ formData, userId, productId }) => ({
+        url: `/add/update/review/${productId}?id=${userId}`,
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["product"],
+    }),
   }),
 });
 
@@ -100,4 +121,6 @@ export const {
   useProductDetailQuery,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useGetAllReviewsQuery,
+  useAddOrUpdateReviewMutation,
 } = productAPI;

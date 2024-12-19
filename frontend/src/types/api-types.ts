@@ -6,6 +6,7 @@ import {
   OrderType,
   PieChartType,
   Product,
+  Review,
   ShippingInfoType,
   StatsType,
   User,
@@ -55,6 +56,11 @@ export type GetLatestProductsType = {
   products: Product[];
 };
 
+export type GetAllReviewsType = {
+  success: boolean;
+  reviews: Review[];
+};
+
 export type CategoriesType = {
   success: boolean;
   categories: string[];
@@ -84,6 +90,11 @@ export type DeleteProductType = {
 export type ProductDetailType = {
   success: boolean;
   product: Product;
+};
+
+export type AddOrUpdateReviewResponseType = {
+  success: boolean;
+  message: string;
 };
 
 export type NewOrderRequestType = {
