@@ -47,3 +47,7 @@ Whatever the Response is coming by RTK query we are storing it in the frontend w
 11. Cloudinary Setup
 
 Storing all the images in Cloudinary which is an cloud image optimisation and storage tool.
+
+12. Redis Setup
+
+The Ecommerce app is faster in performance with the use of Redis powers like caching, etc.
