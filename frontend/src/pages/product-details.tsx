@@ -1,6 +1,7 @@
 import { Navigate, useParams } from "react-router-dom";
 import {
   useAddOrUpdateReviewMutation,
+  useDeleteReviewMutation,
   useGetAllReviewsQuery,
   useProductDetailQuery,
 } from "../redux/api/productAPI";
@@ -9,12 +10,12 @@ import { CarouselButtonType, MyntraCarousel, Slider, useRating } from "6pp";
 import { FormEvent, useRef, useState } from "react";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import RatingsComponent from "../components/Ratings";
-import { CartItemsType, Review } from "../types/types";
+import { CartItemsType, Review, User } from "../types/types";
 import toast from "react-hot-toast";
 import { addToCart } from "../redux/reducer/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FiEdit } from "react-icons/fi";
-import { FaRegStar, FaStar } from "react-icons/fa";
+import { FaRegStar, FaStar, FaTrash } from "react-icons/fa";
 import { RootState } from "../types/reducer-types";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { MessageResponseType } from "../types/api-types";
@@ -35,6 +36,7 @@ const ProductDetails = () => {
   );
 
   const [addOrUpdateReview] = useAddOrUpdateReviewMutation();
+  const [deleteReviewApi] = useDeleteReviewMutation();
 
   const [carouselOpen, setCarouselOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -118,6 +120,27 @@ const ProductDetails = () => {
     } finally {
       setRating(0);
       setComment("");
+    }
+  };
+
+  const deleteReview = async (reviewId: string) => {
+    try {
+      const res = await deleteReviewApi({
+        reviewId,
+        userId: user?._id as string,
+      });
+
+      if ("data" in res) {
+        toast.success(res.data?.message as string);
+        console.log(res.data);
+      } else {
+        const error = res.error as FetchBaseQueryError;
+        const message = (error.data as MessageResponseType).message;
+        toast.error(message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error as string);
     }
   };
 
@@ -223,7 +246,13 @@ const ProductDetails = () => {
               <Skeleton width="45rem" length={5} />
             </>
           ) : (
-            reviewData?.reviews.map((review) => <ReviewCard review={review} />)
+            reviewData?.reviews.map((review) => (
+              <ReviewCard
+                review={review}
+                user={user!}
+                deleteReview={deleteReview}
+              />
+            ))
           )}
         </div>
       </section>
@@ -231,7 +260,15 @@ const ProductDetails = () => {
   );
 };
 
-const ReviewCard = ({ review }: { review: Review }) => {
+const ReviewCard = ({
+  review,
+  user,
+  deleteReview,
+}: {
+  review: Review;
+  user: User;
+  deleteReview: (reviewId: string) => void;
+}) => {
   return (
     <div key={review._id} className="review">
       <RatingsComponent value={review.rating} />
@@ -240,6 +277,11 @@ const ReviewCard = ({ review }: { review: Review }) => {
         <img src={review.user.photo} alt="User Image" />
         <small>{review.user.name}</small>
       </div>
+      {review.user._id === user._id && (
+        <button onClick={() => deleteReview(review._id)}>
+          <FaTrash />
+        </button>
+      )}
     </div>
   );
 };

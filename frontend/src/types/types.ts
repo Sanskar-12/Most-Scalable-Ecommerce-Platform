@@ -28,6 +28,7 @@ export type Review = {
   comment: string;
   rating: number;
   user: {
+    _id: string;
     name: string;
     photo: string;
   };
@@ -62,6 +63,11 @@ export type AddOrUpdateReviewRequest = {
   userId: string;
   productId: string;
   formData: FormData;
+};
+
+export type DeleteReviewRequest = {
+  userId: string;
+  reviewId: string;
 };
 
 export type ShippingInfoType = {

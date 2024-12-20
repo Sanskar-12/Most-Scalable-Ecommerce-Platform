@@ -3,6 +3,7 @@ import {
   AddOrUpdateReviewResponseType,
   CategoriesType,
   DeleteProductType,
+  DeleteReviewResponseType,
   GetAllReviewsType,
   GetLatestProductsType,
   NewProductType,
@@ -13,6 +14,7 @@ import {
 import {
   AddOrUpdateReviewRequest,
   DeleteProductRequest,
+  DeleteReviewRequest,
   NewProductRequest,
   SearchProductRequest,
   UpdateProductRequest,
@@ -109,6 +111,16 @@ export const productAPI = createApi({
       }),
       invalidatesTags: ["product"],
     }),
+    deleteReview: builder.mutation<
+      DeleteReviewResponseType,
+      DeleteReviewRequest
+    >({
+      query: ({ userId, reviewId }) => ({
+        url: `/delete/review/${reviewId}?id=${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["product"],
+    }),
   }),
 });
 
@@ -123,4 +135,5 @@ export const {
   useDeleteProductMutation,
   useGetAllReviewsQuery,
   useAddOrUpdateReviewMutation,
+  useDeleteReviewMutation,
 } = productAPI;

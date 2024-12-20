@@ -97,6 +97,11 @@ export type AddOrUpdateReviewResponseType = {
   message: string;
 };
 
+export type DeleteReviewResponseType = {
+  success: boolean;
+  message: string;
+};
+
 export type NewOrderRequestType = {
   shippingInfo: ShippingInfoType;
   user: string;
