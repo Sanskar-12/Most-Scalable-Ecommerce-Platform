@@ -16,14 +16,8 @@ import axios from "axios";
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const {
-    cartItems,
-    discount,
-    shippingCharges,
-    subtotal,
-    tax,
-    total,
-  } = useSelector((state: CartState) => state.cartSlice);
+  const { cartItems, discount, shippingCharges, subtotal, tax, total } =
+    useSelector((state: CartState) => state.cartSlice);
 
   const [coupon, setCoupon] = useState<string>("");
   const [isValidCoupon, setIsValidCoupon] = useState<boolean>(false);
@@ -121,7 +115,7 @@ const Cart = () => {
             </span>
           ) : (
             <span className="red">
-              Invlaid Coupon <VscError />
+              Invalid Coupon <VscError />
             </span>
           ))}
 

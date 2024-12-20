@@ -277,7 +277,7 @@ const ReviewCard = ({
         <img src={review.user.photo} alt="User Image" />
         <small>{review.user.name}</small>
       </div>
-      {review.user._id === user._id && (
+      {review.user._id === user?._id && (
         <button onClick={() => deleteReview(review._id)}>
           <FaTrash />
         </button>
