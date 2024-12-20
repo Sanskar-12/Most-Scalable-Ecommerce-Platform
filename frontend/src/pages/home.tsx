@@ -211,7 +211,7 @@ const Home = () => {
           )}
         </main>
       </div>
-      <article className="cover-video-container">
+      {/* <article className="cover-video-container">
         <div className="cover-video-overlay"></div>
         <video src={videoCover} autoPlay loop muted />
         <div className="cover-video-content">
@@ -247,7 +247,7 @@ const Home = () => {
         >
           <FaAnglesDown />
         </motion.span>
-      </article>
+      </article> */}
       <article className="our-clients">
         <div>
           <h2>Our Clients</h2>
