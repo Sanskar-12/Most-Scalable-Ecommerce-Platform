@@ -36,7 +36,7 @@ export const newUser = TryCatch(
       gender,
     });
 
-    invalidateCache({ admin: true });
+    await invalidateCache({ admin: true });
 
     return res.status(200).json({
       success: true,
@@ -86,7 +86,7 @@ export const deleteUser = TryCatch(
 
     await user.deleteOne();
 
-    invalidateCache({ admin: true, order: true });
+    await invalidateCache({ admin: true, order: true });
 
     return res.status(200).json({
       success: true,

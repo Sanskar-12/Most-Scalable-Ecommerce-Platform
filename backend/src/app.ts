@@ -1,8 +1,8 @@
 import express from "express";
 import { config } from "dotenv";
-import { connectDB } from "./utils/features.js";
+import { connectDB, connectRedis } from "./utils/features.js";
 import { errorMiddleware } from "./middlewares/error.js";
-import NodeCache from "node-cache";
+// import NodeCache from "node-cache";
 import morgan from "morgan";
 import Stripe from "stripe";
 import cors from "cors";
@@ -22,8 +22,10 @@ config({
 
 const app = express();
 
-// database connection
+// database and redis connection
 connectDB();
+export const redis = connectRedis(process.env.REDISURI as string);
+export const TTL = process.env.TTL || 4 * 60 * 60; // 4 hours Time to live
 
 // middlewares
 app.use(express.json());
@@ -39,7 +41,7 @@ cloudinary.config({
 
 // Stripe setup
 export const stripe = new Stripe(process.env.STRIPESECRETKEY as string);
-export const nodeCache = new NodeCache();
+// export const nodeCache = new NodeCache();
 
 // routes
 app.get("/", (req, res) => {

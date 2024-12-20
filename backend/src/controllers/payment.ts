@@ -3,7 +3,7 @@ import { TryCatch } from "../middlewares/error.js";
 import { NewCouponRequestBody } from "../types/types.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { Coupon } from "../models/coupon.js";
-import { nodeCache, stripe } from "../app.js";
+import { redis, stripe, TTL } from "../app.js";
 import { invalidateCache } from "../utils/features.js";
 
 export const createPaymentIntent = TryCatch(
@@ -40,7 +40,7 @@ export const newCoupon = TryCatch(
       amount,
     });
 
-    invalidateCache({
+    await invalidateCache({
       product: false,
       order: false,
       coupon: true,
@@ -71,15 +71,17 @@ export const applyDiscount = TryCatch(
 
 export const allCoupons = TryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    let coupons = [];
+    let coupons;
 
     const key = `all-coupons`;
 
-    if (nodeCache.has(key)) {
-      coupons = JSON.parse(nodeCache.get(key) as string);
+    coupons = await redis.get(key);
+
+    if (coupons) {
+      coupons = JSON.parse(coupons);
     } else {
       coupons = await Coupon.find({});
-      nodeCache.set(key, JSON.stringify(coupons));
+      await redis.setex(key, TTL, JSON.stringify(coupons));
     }
 
     return res.status(200).json({
@@ -97,7 +99,7 @@ export const viewCoupon = TryCatch(
 
     if (!existingCoupon) return next(new ErrorHandler("Coupon not found", 400));
 
-    invalidateCache({
+    await invalidateCache({
       product: false,
       order: false,
       coupon: true,
@@ -126,7 +128,7 @@ export const updateCoupon = TryCatch(
 
     await existingCoupon.save();
 
-    invalidateCache({
+    await invalidateCache({
       product: false,
       order: false,
       coupon: true,
@@ -150,7 +152,7 @@ export const deleteCoupon = TryCatch(
 
     await coupon.deleteOne();
 
-    invalidateCache({
+    await invalidateCache({
       product: false,
       order: false,
       coupon: true,

@@ -1,9 +1,10 @@
 import mongoose, { Document } from "mongoose";
 import { InvalidateCacheType, OrderItemType } from "../types/types.js";
-import { nodeCache } from "../app.js";
+import { redis } from "../app.js";
 import { Product } from "../models/product.js";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { Review } from "../models/review.js";
+import { Redis } from "ioredis";
 
 export const connectDB = async () => {
   try {
@@ -20,7 +21,16 @@ export const connectDB = async () => {
   }
 };
 
-export const invalidateCache = ({
+export const connectRedis = (redisUri: string) => {
+  const redis = new Redis(redisUri);
+
+  redis.on("connect", () => console.log("Redis Connected"));
+  redis.on("error", (e) => console.log(e));
+
+  return redis;
+};
+
+export const invalidateCache = async ({
   product,
   productId,
   order,
@@ -28,7 +38,6 @@ export const invalidateCache = ({
   admin,
   userId,
   coupon,
-  couponId,
 }: InvalidateCacheType) => {
   if (product) {
     const productKeys: string[] = [
@@ -43,7 +52,7 @@ export const invalidateCache = ({
       productId.forEach((id) => productKeys.push(`product-${id}`));
     }
 
-    nodeCache.del(productKeys);
+    await redis.del(productKeys);
   }
   if (order) {
     const orderKeys: string[] = [
@@ -52,7 +61,7 @@ export const invalidateCache = ({
       `order-${orderId}`,
     ];
 
-    nodeCache.del(orderKeys);
+    await redis.del(orderKeys);
   }
   if (admin) {
     let adminKeys: string[] = [
@@ -62,12 +71,12 @@ export const invalidateCache = ({
       "admin-line-charts",
     ];
 
-    nodeCache.del(adminKeys);
+    await redis.del(adminKeys);
   }
   if (coupon) {
     let couponKeys: string[] = ["all-coupons"];
 
-    nodeCache.del(couponKeys);
+    await redis.del(couponKeys);
   }
 };
 
