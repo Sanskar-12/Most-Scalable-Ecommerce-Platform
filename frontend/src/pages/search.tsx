@@ -10,15 +10,17 @@ import { Skeleton } from "../components/Loader";
 import { useDispatch } from "react-redux";
 import { CartItemsType } from "../types/types";
 import { addToCart } from "../redux/reducer/cartSlice";
+import { useSearchParams } from "react-router-dom";
 
 const Search = () => {
+  const dispatch = useDispatch();
+  const searchQuery = useSearchParams()[0];
+
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [maxPrice, setMaxPrice] = useState(1000000);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(searchQuery.get("category") || "");
   const [page, setPage] = useState(1);
-
-  const dispatch = useDispatch();
 
   const {
     data: categoriesData,

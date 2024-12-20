@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./redux/reducer/userSlice";
 import { RootState } from "./types/reducer-types";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Footer from "./components/Footer";
 
 // Admin Routes
 
@@ -134,6 +135,7 @@ const App = () => {
           </Route>
           <Route path="*" element={<Page404 />} />
         </Routes>
+        <Footer />
       </Suspense>
       <Toaster position="top-center" />
     </Router>

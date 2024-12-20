@@ -225,11 +225,13 @@ const ProductDetails = () => {
       <section>
         <article>
           <h2>Reviews</h2>
-          {reviewLoading ? null : (
-            <button onClick={showModal}>
-              <FiEdit />
-            </button>
-          )}
+          {reviewLoading
+            ? null
+            : user && (
+                <button onClick={showModal}>
+                  <FiEdit />
+                </button>
+              )}
         </article>
         <div
           style={{
