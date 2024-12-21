@@ -9,7 +9,6 @@ import {
   useUpdateOrderMutation,
 } from "../../../redux/api/orderAPI";
 import { OrderItemType } from "../../../types/types";
-import { server } from "../../../redux/store";
 import { Skeleton } from "../../../components/Loader";
 import toast from "react-hot-toast";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
