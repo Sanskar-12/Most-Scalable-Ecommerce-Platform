@@ -1,5 +1,3 @@
-import { CarouselButtonType } from "6pp";
-import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import { Skeleton } from "../components/Loader";
 import { Navigate, useParams } from "react-router-dom";
 import { useOrderDetailsQuery } from "../redux/api/orderAPI";
@@ -11,8 +9,6 @@ const OrderDetail = () => {
   const { data, isLoading, isError } = useOrderDetailsQuery(
     params.id as string
   );
-
-  console.log(data);
 
   if (isError) return <Navigate to={"/404"} />;
 
@@ -74,22 +70,6 @@ const OrderDetail = () => {
         </>
       )}
     </div>
-  );
-};
-
-const NextButton: CarouselButtonType = ({ onClick }) => {
-  return (
-    <button onClick={onClick} className="carousel-btn">
-      <FaArrowRightLong />
-    </button>
-  );
-};
-
-const PrevButton: CarouselButtonType = ({ onClick }) => {
-  return (
-    <button onClick={onClick} className="carousel-btn">
-      <FaArrowLeftLong />
-    </button>
   );
 };
 

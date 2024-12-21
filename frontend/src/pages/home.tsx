@@ -10,9 +10,7 @@ import { motion } from "framer-motion";
 import { TbTruckDelivery } from "react-icons/tb";
 import { LuShieldCheck } from "react-icons/lu";
 import { FaHeadset } from "react-icons/fa";
-import videoCover from "../assets/videos/cover.mp4";
 import { Slider } from "6pp";
-import { FaAnglesDown } from "react-icons/fa6";
 
 const clients = [
   {
@@ -147,11 +145,6 @@ const Home = () => {
   };
 
   if (isError) toast.error("Cannot Fetch the Products");
-
-  const coverMessage =
-    "Fashion isn't just clothes; it's a vibrant language. Silhouettes and textures speak volumes, a conversation starter with every bold print. It's a way to tell our story, a confidence booster, or a playful exploration. From elegance to rebellion, fashion lets us navigate the world in style.".split(
-      " "
-    );
 
   return (
     <>
