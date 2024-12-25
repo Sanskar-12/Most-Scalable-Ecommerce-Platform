@@ -1,6 +1,6 @@
-# E-Commerce Website
+# E-Commerce Webapp ( NovaMarket )
 
-An E-Commerce Website built using the **MERN Stack** with the following technologies:
+An E-Commerce Webapp built using the **MERN Stack** with the following technologies:
 
 - **TypeScript** for type-safe development.
 - **Express.js** for backend server.
