@@ -20,9 +20,7 @@ services:
       - 8001:8001
 
   server:
-    build: 
-      context: ./backend
-      dockerfile: Dockerfile.dev
+    image: sanskar360/ecommerce-backend:v1
     container_name: server
     ports:
       - 4000:4000
@@ -43,9 +41,7 @@ services:
          action: sync
 
   client:
-    build: 
-      context: ./frontend
-      dockerfile: Dockerfile.dev
+    image: sanskar360/ecommerce-frontend:v1
     container_name: client
     ports:
       - 5173:5173
